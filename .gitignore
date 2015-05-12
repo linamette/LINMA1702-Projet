@@ -1,0 +1,16 @@
+# Some temp files from various editors
+.*.swp
+*~
+
+# LaTeX auxiliary files
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.toc
+*.gz
+*.bcf
+*.run.xml
+*(busy)

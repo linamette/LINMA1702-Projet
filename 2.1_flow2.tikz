@@ -1,0 +1,80 @@
+\begin{tikzpicture}[->,>=stealth']
+
+ \node[rect] (SOURCE)
+ {
+   \(\sum_{i=1}^{T} d^i\)
+ };
+ 
+ \node[circ,
+ below of=SOURCE,
+ node distance=2cm] (NI)
+ {
+  \(P^{1}\)
+ };
+ 
+ 
+ \node[
+ right of=SOURCE,
+ node distance=4cm] (B1)
+ {
+  \dots
+ };
+ 
+ 
+ \node[rect,
+ below of=NI,
+ node distance=2cm] (DI)
+ {
+  \(-d^1\)
+ };
+ 
+ 
+ \node[rect,
+ left of=DI,
+ node distance=3cm] (SIMO)
+ {
+  \(s^{0}\)
+ };
+ 
+ \node[circ,
+ right of=DI,
+ node distance=1cm] (SI)
+ {
+  \(s^1\)
+ };
+ 
+ 
+ \node[circ,
+ right of=NI,
+ node distance=4cm] (NIPO)
+ {
+  \(P^{2}\)
+ };
+ 
+ 
+ \node[
+ below of=NIPO,
+ node distance=2cm] (R3)
+ {
+  \dots
+ };
+ 
+ \path
+ (SOURCE)	 edge[bend right=80] node[anchor=center,left]{$n^1$} (NI)
+ (SOURCE)	 edge			     node[anchor=center,left]{$n_{hs}^1$} (NI)
+ (SOURCE)	 edge[bend left=80]  node[anchor=center,left]{$n_{st}^1$} (NI)
+ 
+ (SOURCE)	 edge[bend left,dashed]  (NIPO)
+ (SOURCE)	 edge[bend left,dashed]  (B1)
+ 
+ (NI)		 edge		         (DI)
+ (NI)		 edge[bend left]     (SI)
+ (SIMO)		 edge[bend left]     node[anchor=center,above]{$\Delta^1 s$} (DI)
+ (SIMO)		 edge[bend right=50] node[anchor=center,above]{$s^1$} (SI)
+ 
+ (NIPO)		 edge[bend right]    node[anchor=center,above]{$r^2$} (DI)
+ (SI)		 edge[bend left]     node[anchor=center,above]{$\Delta^{2} s$} (R3)
+ (SI)		 edge[bend right=50] node[anchor=center,above]{$s^{2}$} (R3)
+ ;
+
+\end{tikzpicture}

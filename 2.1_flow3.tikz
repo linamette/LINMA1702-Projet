@@ -1,0 +1,67 @@
+\begin{tikzpicture}[->,>=stealth']
+
+ \node[rect] (SOURCE)
+ {
+   \(\sum_{i=1}^{T} d^i\)
+ };
+ 
+ \node[circ,
+ below of=SOURCE,
+ node distance=2cm] (NI)
+ {
+  \(P^{T}\)
+ };
+ 
+ 
+ \node[
+ left of=SOURCE,
+ node distance=4cm] (B2)
+ {
+  \dots
+ };
+ 
+ 
+ \node[rect,
+ below of=NI,
+ node distance=2cm] (DI)
+ {
+  \(-d^T\)
+ };
+ 
+ \node[rect,
+ right of=DI,
+ node distance=1.1cm] (SI)
+ {
+  \(-s^{T}\)
+ };
+ 
+ 
+ \node[rect,
+ left of=DI,
+ node distance=4cm] (DIMO)
+ {
+  \(-d^{T-1}\)
+ };
+ 
+ \node[circ,
+ right of=DIMO,
+ node distance=1.4cm] (SIMO)
+ {
+  \(s^{T-1}\)
+ };
+ 
+ \path
+ (SOURCE)	 edge[bend right=80] node[anchor=center,left]{$n^T$} (NI)
+ (SOURCE)	 edge			     node[anchor=center,left]{$n_{hs}^T$} (NI)
+ (SOURCE)	 edge[bend left=80]  node[anchor=center,left]{$n_{st}^T$} (NI)
+ 
+ (SOURCE)	 edge[bend right,dashed] (B2)
+ 
+ (NI)		 edge[bend right] node[anchor=center,left]{$r^T$} (DIMO)
+ (NI)		 edge		      (DI)
+ (NI)		 edge[bend left]  (SI)
+ (SIMO)		 edge[bend left]     node[anchor=center,above]{$\Delta^T s$} (DI)
+ (SIMO)		 edge[bend right=50] node[anchor=center,above]{$s^T$} (SI)
+ ;
+
+\end{tikzpicture}

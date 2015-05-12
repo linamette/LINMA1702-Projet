@@ -1,0 +1,200 @@
+
+%Soit $d^t = \mathrm{demande}(t)$, le nombre de smartphones à produire lors de la semaine $t$. Les semaines sont numérotées de $1$ à $T$.
+
+\begin{table}\label{tab:donnees}
+    \centering
+    \begin{tabular}{|>{\centering}p{1cm}|m{12cm}|}
+        \hline
+        $T$ & le nombre de semaines sur lesquelles on effectue la planification \\
+        \hline
+        $D^t$ & la demande de smartphones pour la semaine $t$ \\
+        \hline
+        $C_\mathrm{m}$ & le coût des matériaux \\
+        \hline
+        $C_\mathrm{s}$ & le coût du stockage d'un smartphone \\
+        \hline
+        $D_\mathrm{a}$ & la durée d'assemblage d'un smartphone \\
+        \hline
+        $N_\mathrm{o}$ & le nombre d'ouvriers \\
+        \hline
+        $C_\mathrm{h}$ & le coût horaire d'un ouvrier \\
+        \hline
+        $N_\mathrm{h}$ & le nombre d'heures (non-supplémentaires) disponibles pour assembler des smartphones, par semaine et par ouvrier \\
+        \hline
+        $C_\mathrm{r}$ & le coût supplémentaire associé au retard de livraison d'un smartphone \\
+        \hline
+        $C_\mathrm{hs}$ & le coût d'une heure supplémentaire de la part d'un ouvrier \\
+        \hline
+        $N_\mathrm{hs}$ & le nombre d'heures supplémentaires disponibles pour assembler des smartphones, par semaine et par ouvrier \\
+        \hline
+        $C_\mathrm{st}$ & le coût de la sous-traitance pour l'assemblage d'un smartphone \\
+        \hline
+        $S_\mathrm{i}$ & le stock initial (et final) de smartphones \\
+        \hline
+    \end{tabular}
+    \begin{tabular}{|>{\centering}p{6cm}|m{7cm}|}
+        \hline
+        $\displaystyle N_\mathrm{max} = \frac{(60 \,\mathrm{min/h})}{D_\mathrm{a}}\,N_\mathrm{h}\,N_\mathrm{o}$ & le nombre maximum de smartphones pouvant être produits par les ouvriers en conditions normales \\
+        \hline
+        $\displaystyle N_\mathrm{hs,max} = \frac{(60 \,\mathrm{min/h})}{D_\mathrm{a}}\,N_\mathrm{hs}\,N_\mathrm{o}$ & le nombre maximum de smartphones pouvant être produits par les ouvriers en heures supplémentaires \\
+        \hline
+    \end{tabular}
+    \caption{Les données du modèle.}
+\end{table}
+
+\begin{table}\label{tab:variables}
+    \centering
+    \begin{tabular}{|>{\centering}p{1cm}|m{12cm}|}
+        \hline
+        $n^t$ & le nombre de smartphones produits en conditions normales \\
+        \hline
+        $n_{hs}^t$ & le nombre de smartphones produits en heures supplémentaires \\
+        \hline
+        $n_{st}^t$ & le nombre de smartphones produits en sous-traitance \\
+        \hline
+        $s^0$ & le stock initial de smartphones \\
+        \hline
+        $s^t$ & le stock de smartphones à la fin de la semaine $t$, disponible en semaine $t+1$, pour lequel on paye le stockage en semaine $t$ \\
+        \hline
+        $r^t$ & les smartphones retardés lors de la semaine $t-1$, à produire et livrer en semaine $t$ \\
+        \hline
+    \end{tabular}
+    \caption{Les variables du modèle, pour chaque semaine $t = 1,\dots,T$.}
+\end{table}
+%
+%
+
+\subsection{Fonction objectif et contraintes}
+
+Dans un premier temps, nous allons établir un modèle linéaire du problème sous forme de fonction à minimiser sous contrainte, en utilisant les données et les variables décrites dans les tables \ref{tab:donnees} et \ref{tab:variables}.
+%TODO: fix the label problem
+
+Commençons par la fonction objectif
+$f(x) : \mathbb{R}^{5T+1} \rightarrow \mathbb{R}$.
+On définit le vecteur des variables $x \in \mathbb{R}^{5T+1}$:
+\[
+    x = (n^1,\dots,n^T,n_{hs}^1,\dots,n_{hs}^T,n_{st}^1,\dots,n_{st}^T,s^0,\dots,s^T,r^1,\dots,r^T)
+    \text.
+\]
+
+Par simplicité, nous allons décomposer $f(x)$ en une somme de fonctions $f^t$ définies pour chaque semaine $t$:
+\[
+    f(x) = \sum_{t=1}^{T} f^t(n^t, n_{hs}^t, n_{st}^t, s^t, r^t)
+\]
+et
+\begin{align*}
+    f^t(n^t, n_{hs}^t, n_{st}^t, s^t, r^t)
+    &= (n^t + n_{hs}^t)\,C_m 
+    & \text{prix des matériaux}\\
+    &+ n_{hs}^t\,\frac{D_a}{60 \,\mathrm{min/h}}\,C_{hs}
+    & \text{production en heures supplémentaires}\\
+    &+ n_{st}^t\,C_{st}
+    & \text{production sous-traitée}\\
+    &+ s^t\,C_s
+    & \text{stockage des smartphones}\\
+    &+ r^t\,C_r
+    & \text{retard de livraison}
+    \text.
+\end{align*}
+
+Il est à noter que le salaire en heure normale des ouvriers n'apparaît pas dans cette fonction: nous ne sommes plus au XIXe siècle, un ouvrier est donc toujours payé pour sa semaine, peu importe le travail qu'il a réellement effectué. Il s'agit donc d'un coût fixe que l'on ne peut pas optimiser sans licencier des ouvriers.
+
+Détaillons ensuite les contraintes de l'optimisation:
+\begin{enumerate}
+    \item égalité entre
+    \begin{itemize}
+        \item les smartphones produits et disponible en stock en début de semaine et
+        \item la demande, le stock disponible en fin de semaine et le retard de la semaine passé, moins le retard que l'on décide de prendre cette semaine :
+    \end{itemize}
+    \[
+        n^t + n_{hs}^t + n_{st}^t + s^{t-1} = d^t + s^t + r^t - r^{t+1}
+        \text;
+    \]
+    
+    \item nécessité de produire chaque semaine au moins le nombre de smartphones retardés lors de la semaine précédente (afin de ne pas avoir un retard de deux semaines) :
+    \[
+        n^t + n_{hs}^t + n_{st}^t + (s^{t-1} - s^t) \geq r^t
+        \text;
+    \]
+    
+    \item limite sur la capacité en heures normales et supplémentaires :
+    \[
+        n^t \leq N_{max} \quad\text{et}\quad n_{hs}^t \leq N_{hs,max}
+        \text;
+    \]
+    
+    \item stock initial et final fixé à $S_i$ :
+    \[
+        s^0 = S_i \quad\text{et}\quad s^T = S_i
+        \text;
+    \]
+    
+    \item pas de retard à rattrapper en semaine 1 :
+    \[
+        r^1 = 0
+        \text{;}
+    \]
+    
+    \item enfin, toutes les variables positives :
+    \[
+        n^t, n_{hs}^t, n_{st}^t, s^t, s^T, r^t, r^T \geq 0
+        \text;
+    \]
+\end{enumerate}
+
+En résumé, le problème se modélise de la manière suivante :
+\begin{align*}
+    \mathrm{min}\;f(x) =& \sum_{t=1}^{T}
+    (n^t + n_{hs}^t)\,C_m 
+    + n_{hs}^t\,\frac{D_a}{60 \,\mathrm{min/h}}\,C_{hs} \\
+    &+ n_{st}^t\,C_{st}
+    + s^t\,C_s
+    + r^t\,C_r \\[0.5em]
+%
+    \mathrm{scq}\;\phantom{f(x) =}
+    & n^t + n_{hs}^t + n_{st}^t + s^{t-1} = d^t + s^t + r^t - r^{t+1} \\
+    & n^t + n_{hs}^t + n_{st}^t + (s^{t-1} - s^t) \geq r^t \\
+    & n^t \leq N_{max} \\
+    & n_{hs}^t \leq N_{hs,max} \\
+    & s^0 = S_i \\
+    & s^T = S_i \\
+    & r^1 = 0 \\
+    & n^t, n_{hs}^t, n_{st}^t, s^t, s^T, r^t, r^T \geq 0 \\
+\end{align*}
+
+\subsection{Reformulation en problème de flow}
+
+Dans un deuxième temps, afin de démontrer que le problème relaxé donne une solution entière, nous allons montrer que le problème peut être reformulé sous la forme d'un flow de coût minimal, dont les capacités et les entrées/sorties sont entières.
+
+Voici comment nous avons reformulé le problème : nous avons défini un graphe orienté dont les deux noeuds d'entrée ont pour valeur $D=\sum_{i=0}^{T-1} d^t$, c'est-à-dire la quantité de smartphones à produire au total, et $s^0 = S_i$, c'est-à-dire le stock initial de smartphones.
+
+Le graphe possède $T+1$ sorties, qui sont les demandes de chaque semaine $d^t$, et le stock de la dernière semaine $s^T = S_i$.
+
+Le flow d'entrée $D$ va parcourir le graphe à travers $3T$ arrêtes de \og{}production\fg{}, correspondant aux variables $n^t$, $n_{hs}^t$, $n_{st}^t$. Celles-ci ont des coûts et des capacités correspondant à la variable associée, c'est-à-dire respectivement $0/N_\text{max}$, $C_\text{hs}/N_\text{hs,max}$ et $C_\text{st}/\infty$.
+
+Toute la production d'une semaine se retrouve dans le noeud $P^t$, à partir duquel elle est redistribuée par des arêtes dans trois autres noeuds: la demande de cette semaine, le stock de cette semaine, et la demande de la semaine passée. Cette dernière arrête correspond au retard de production d'une semaine, la variable $r^t$, et possède donc un coût $C_r$.
+
+Enfin, les noeuds de stock $s^t$ possèdent chacun deux arêtes, la première 
+
+Chaque noeud \og{}stock\fg{} (entrée ou non) peut gratuitement envoyer du flow dans la sortie de la semaine suivante, ou envoyer du flow dans le stock de la semaine suivante au coût de stockage $C_{s}$.
+
+\begin{figure}[htb] \label{flow_i}
+    \centering
+    \scalebox{1.5}{\includegraphics{2.1_flow1.tikz}}
+    \caption{Graphe orienté représentant la $i$-ème semaine. Les entrées/sorties sont en rectangle, les autres noeuds en rond. Dans chaque noeud est indiqué la variable correspondant. Dans le cas des entrées/sorties, l'intérieur représente la valeur de ce noeud, positive pour une entrée et négative pour une sortie. Les labels des arrêtes indiquent leurs coût et capacité sous la forme \og{}$\text{coût}\,/\,\text{capacité}$\fg{}. Si aucun label n'est indiqué sur une arrête pleine, on suppose $0\,/\,\infty$. Les arrêtes en pointillés indiquent un plus grand nombre d'arrêtes, qui n'ont pas été représentées par simplicité. De même, les points de suspension indiquent qu'il manque le reste du graphe (c'est-à-dire, les autres semaines).}
+\end{figure}
+
+\begin{figure}[htb] \label{flow_first}
+    \centering
+    \scalebox{1.5}{\includegraphics{2.1_flow2.tikz}}
+    \caption{Graphe orienté représentant la première semaine. Les entrées/sorties sont en rectangle, les autres noeuds en rond. Dans chaque noeud est indiqué la variable correspondant. Dans le cas des entrées/sorties, l'intérieur représente la valeur de ce noeud, positive pour une entrée et négative pour une sortie. Les labels des arrêtes indiquent leurs coût et capacité sous la forme \og{}$\text{coût}\,/\,\text{capacité}$\fg{}. Si aucun label n'est indiqué sur une arrête pleine, on suppose $0\,/\,\infty$. Les arrêtes en pointillés indiquent un plus grand nombre d'arrêtes, qui n'ont pas été représentées par simplicité. De même, les points de suspension indiquent qu'il manque le reste du graphe (c'est-à-dire, les autres semaines).}
+\end{figure}
+
+\begin{figure}[htb] \label{flow_last}
+    \centering
+    \scalebox{1.5}{\includegraphics{2.1_flow3.tikz}}
+    \caption{Graphe orienté représentant la $T$-ème semaine, c'est-à-dire la dernière. Les entrées/sorties sont en rectangle, les autres noeuds en rond. Dans chaque noeud est indiqué la variable correspondant. Dans le cas des entrées/sorties, l'intérieur représente la valeur de ce noeud, positive pour une entrée et négative pour une sortie. Les labels des arrêtes indiquent leurs coût et capacité sous la forme \og{}$\text{coût}\,/\,\text{capacité}$\fg{}. Si aucun label n'est indiqué sur une arrête pleine, on suppose $0\,/\,\infty$. Les arrêtes en pointillés indiquent un plus grand nombre d'arrêtes, qui n'ont pas été représentées par simplicité. De même, les points de suspension indiquent qu'il manque le reste du graphe (c'est-à-dire, les autres semaines).}
+\end{figure}
+
+
+
