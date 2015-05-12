@@ -100,8 +100,8 @@ for i=3*semaine+1:8*semaine+1 %8eme condition
    A(i,count)=-1;
    count = count +1;
 end
-%A
-%size(A)
+A
+size(A)
 
 
 %création de la matrice b
@@ -132,13 +132,8 @@ beq = zeros(1,semaine+3);
 for i=1:semaine
    beq(i)=d_t(i); 
 end
-for i=semaine+1:semaine+2
-   beq(i)=s_i; 
-end
-for i=semaine+3:semaine+3
-   beq(i)=0; 
-end
-
+for i=semaine+1:
+=[2101,s_i,s_i,0];
 Aeq=zeros(semaine+3,5*semaine+1);
 for i=1:semaine
    Aeq(i ,i)=1;
@@ -149,10 +144,10 @@ for i=1:semaine
    Aeq(i, i+4*semaine+1)=-1;
   % A(i, i+4*semaine+2)= 1;
 end %premiere contrainte
-Aeq(semaine+1,3*semaine+1)=1;
-Aeq(semaine+2,4*semaine+1)=1;
-Aeq(semaine+3,5*semaine+1)=1;
-x=linprog(transpose(f),A,b,Aeq,beq.');
+Aeq(2,4)=1;
+Aeq(3,5)=1;
+Aeq(4,6)=1;
+x=linprog(transpose(f),A,b,Aeq,beq);
 
 end
 
