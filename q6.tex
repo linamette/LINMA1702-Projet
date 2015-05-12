@@ -1,0 +1,17 @@
+Le coût variable pour les heures supplémentaires modifie radicalement le problème, le rendant non-linéaire. En effet, si on considère $C$ le coût d'une heure supplémentaire et $n$ le nombre d'heures supplémentaires, avec un taux d'augmentation de $5\%$, le coût total des heures supplémentaires $C_\text{tot}$ est le suivant:
+\begin{align*}
+    C_\text{tot}
+    &= C + C (105\%) + C (105\%)^2 + \dots + C (105\%)^{n-1}
+    &= \sum_{i=0}^{n-1} C (105\%)^i
+    \text.
+\end{align*}
+Nous voyons aisément, parce-que $n$ apparaît en exposant, que $C_\text{tot}$ n'est plus linéaire selon cette variable.
+
+Le problème complet se présente donc de la manière suivante :
+\[
+    \text{min}_{\dots,n,\dots} f(\dots,n,\dots) = \dots + C_\text{tot} + \dots
+    \text.
+\]
+Le reste de la fonction objectif ne changeant pas, nous l'avons omis. Seul $C_\text{tot}$ est différent. Comme celui-ci n'est plus linéaire, $f$ n'est plus non plus linéaire selon l'une des variables par rapports auxquelles on optimise. Le problème n'est donc plus linéaire.
+
+La même situation apparaît si l'on voulait diminuer le coût des heures supplémentaires: il suffit de remplacer $105\%$ par une valeur inférieure à $100\%$. On obtiendra une exponentielle décroissante, qui n'est bien évidemment toujours pas linéaire.
