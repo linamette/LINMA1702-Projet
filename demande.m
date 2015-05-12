@@ -1,5 +1,7 @@
 function [x]= demande( semaine )
 
+
+
 %variables
 n_t=0;
 nhs_t=0;
@@ -74,7 +76,7 @@ for i=2*semaine+1: 3*semaine
    A(i, count+3*semaine)=  -1;
    A(i, count+3*semaine+1)= 1;
    A(i, count+4*semaine+1)= 1;
-   count+1;
+   count=count +1;
 end
 count=1;
 for i=3*semaine+1 : 4*semaine
@@ -122,7 +124,7 @@ b(5*semaine+1) = s_i;
 b(5*semaine+2) = s_i;
 b(5*semaine+3) = s_i;
 b(5*semaine+4) = s_i;
-b;
+
 x=linprog(f,A,b);
 
 end
