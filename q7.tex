@@ -1,0 +1,22 @@
+À modifier par rapport à q1 :
+
+- Ajouter une nouvelle série de variables n_o^t, n_e^t, n_l^t, càd le nombre
+  d'ouvriers, d'embauches et de licenciements en début de semaine t (on
+  considère n *après* embauche et licenciement)
+
+- Ajouter une contrainte
+    n_o^t, n_e^t, n_l^t >= 0
+  qui garantit la positivité des nouvelles variables.
+
+- Ajouter une contrainte
+    n_o^t - n_o^{t-1} = n_e^t - n_l^t
+  qui "garde en mémoire" l'évolution du nombre d'ouvriers.
+
+- Modifier la contrainte
+    n_hs^t <= N_{hs,max}
+  pour prendre en compte que N_{hs,max} n'est plus constant, mais dépend
+  maintenant linéairement de n_o^t.
+
+- Ajouter le salaire à la fonction objectif : on se retrouve avec
+    f(...) = ... + n_o*C_o
+  avec C_o le salaire hebdomadaire d'un ouvrier.
