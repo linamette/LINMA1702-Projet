@@ -1,7 +1,5 @@
 function [x]= demande( semaine )
 
-
-
 %variables
 n_t=0;
 nhs_t=0;
@@ -47,7 +45,7 @@ end
 f
 %Contraintes telles que Ax <= b
 %création de la matrice A
-A=zeros(10*semaine+7,5*semaine+1);
+A=zeros(8*semaine+1,5*semaine+1);
 for i=1:semaine
    A(i ,i)=1;
    A(i, i+semaine)=1;
@@ -56,76 +54,94 @@ for i=1:semaine
    A(i, i+3*semaine+1)=-1;
    A(i, i+4*semaine+1)=-1;
   % A(i, i+4*semaine+2)= 1;
-end
+end %premiere contrainte
 count=1;
-for i=semaine+1:2*semaine
-   A(i ,count)=            -1;
-   A(i, count+semaine)=    -1;
-   A(i, count+2*semaine)=  -1;
-   A(i, count+3*semaine)=  -1;
-   A(i, count+3*semaine+1)= 1;
-   A(i, count+4*semaine+1)= 1;
+%for i=semaine+1:2*semaine
+ %  A(i ,count)=            -1;
+  % A(i, count+semaine)=    -1;
+  % A(i, count+2*semaine)=  -1;
+  % A(i, count+3*semaine)=  -1;
+  % A(i, count+3*semaine+1)= 1;
+  % A(i, count+4*semaine+1)= 1;
   % A(i, count+4*semaine+2)=-1;
-   count = count + 1;
-end
+   %count = count + 1;
+%end 
 count=1;
-for i=2*semaine+1: 3*semaine
+for i=1: semaine %2eme
    A(i ,count)=            -1;
    A(i, count+semaine)=    -1;
    A(i, count+2*semaine)=  -1;
    A(i, count+3*semaine)=  -1;
    A(i, count+3*semaine+1)= 1;
    A(i, count+4*semaine+1)= 1;
-   count=count +1;
-end
+   count+1;
+end 
 count=1;
-for i=3*semaine+1 : 4*semaine
+for i=semaine+1 : 2*semaine %3eme contrainte n_t <= n_max
     A(i,count)=1;
     count = count + semaine ;
-end
+end 
 
 count=2;
-for i=4*semaine+1 : 5*semaine
+for i=2*semaine+1 : 3*semaine %4eme
     A(i,count)=1;
     count = count + semaine ;
-end
+end 
+%A(5*semaine+1,3*semaine+1)=1; %5eme= s_o = s_i
+%A(5*semaine+2,3*semaine+1)=-1; %5eme
+%A(5*semaine+3,4*semaine+1)=1; %6eme
+%A(5*semaine+4,4*semaine+1)=-1; %6eme s_t = s_i
+%A(5*semaine+5,4*semaine+2)=1; %7eme
+%A(5*semaine+6,4*semaine+2)=-1; %7eme
 
-A(5*semaine+1,3*semaine+1)=1;
-A(5*semaine+2,3*semaine+1)=-1;
-A(5*semaine+3,4*semaine+1)=1;
-A(5*semaine+4,4*semaine+1)=-1;
-A(5*semaine+5,4*semaine+2)=1;
-A(5*semaine+6,4*semaine+2)=-1;
 count=1;
-for i=5*semaine+7:10*semaine+7
+for i=3*semaine+1:8*semaine+1 %8eme condition
    A(i,count)=-1;
    count = count +1;
 end
-
-
+A
+size(A)
 
 
 %création de la matrice b
-b=zeros(10*semaine+7,1);
-pointeur=0;
-for i=1:2*semaine
-   b(i)=d_t;
-   pointeur = pointeur +1;
-end
-for i=3*semaine+1:(4*semaine) 
+b=zeros(8*semaine+1,1);
+%for i=1:2*semaine %premiere contrainte
+ %  b(i)=d_t;
+%end
+for i=semaine+1:(2*semaine) %2eme
     b(i)= n_max;
-    pointeur = pointeur +1 ;
+   
 end
 
-for i =4*semaine+1: 5*semaine
+for i =2*semaine+1: 3*semaine %3eme contrainte
     b(i)= nhs_max; 
 end
-b(5*semaine+1) = s_i;
-b(5*semaine+2) = s_i;
-b(5*semaine+3) = s_i;
-b(5*semaine+4) = s_i;
+%b(5*semaine+1) = s_i;
+%b(5*semaine+2) = s_i;
+%b(5*semaine+3) = s_i;
+%b(5*semaine+4) = s_i;
+%b
+%size(A)
+%size(f)
+%size(transpose(f))
+%size(b)
 
-x=linprog(f,A,b);
+
+beq=[2101,s_i,s_i,0];
+Aeq=zeros(semaine+3,5*semaine+1);
+for i=1:semaine
+   Aeq(i ,i)=1;
+   Aeq(i, i+semaine)=1;
+   Aeq(i, i+2*semaine)=1;
+   Aeq(i, i+3*semaine)=1;
+   Aeq(i, i+3*semaine+1)=-1;
+   Aeq(i, i+4*semaine+1)=-1;
+  % A(i, i+4*semaine+2)= 1;
+end %premiere contrainte
+Aeq(2,4)=1;
+Aeq(3,5)=1;
+Aeq(4,6)=1;
+x=linprog(transpose(f),A,b,Aeq,beq);
 
 end
 
