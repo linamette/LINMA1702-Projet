@@ -1,14 +1,9 @@
-function [x]= demande( semaine )
+function [x]= demande( donnees )
 
-%variables
-n_t=0;
-nhs_t=0;
-nst_t=0;
-s_t=0;
-r_t=0;
+
 %parametre d'optimisation
-d_t(1)= 2100;
-d_t(2)= 1500;
+semaine = 2
+d_t = donnees.demande
 c_m = 75;
 c_s = 10;
 d_a = 60;
@@ -153,6 +148,8 @@ Aeq(semaine+1,3*semaine+1)=1;
 Aeq(semaine+2,4*semaine+1)=1;
 Aeq(semaine+3,5*semaine+1)=1;
 x=linprog(transpose(f),A,b,Aeq,beq.');
+size(A)
+size(f)
 
 end
 
