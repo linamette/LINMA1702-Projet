@@ -76,15 +76,16 @@ end %premiere contrainte
 count=1;
 for i=semaine+1 : 2*semaine %3eme contrainte n_t <= n_max
     A(i,count)=1;
-    count = count + 1; 
+    count = count + semaine ;
 end 
-
-count=semaine+1;
+count
+size(A)
+count=2;
 for i=2*semaine+1 : 3*semaine %4eme
     A(i,count)=1;
-    count = count + 1; ;
+    count = count + semaine ;
 end 
-
+size(A)
 count=1;
 for i=3*semaine+1:8*semaine+1 %8eme condition
    A(i,count)=-1;
@@ -153,6 +154,9 @@ end %premiere contrainte pour la derniere semaine
 Aeq(semaine+1,3*semaine+1)=1;
 Aeq(semaine+2,4*semaine+1)=1;
 Aeq(semaine+3,4*semaine+2)=1;
+size(A)
+
+
 
 x=linprog(transpose(f),A,b,Aeq,beq.');
 
