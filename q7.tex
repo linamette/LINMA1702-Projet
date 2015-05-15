@@ -1,22 +1,37 @@
-À modifier par rapport à q1 :
+Afin d'inclure la variation du nombre d'employés, nous introduisons trois nouvelles variables pour chaque semaine: $n_\text{o}^t$, le nombre d'ouvriers après embauche et licenciement, $n_\text{e}^t$ le nombre d'embauches et $n_\text{l}^t$, le nombre de licenciements.
 
-- Ajouter une nouvelle série de variables n_o^t, n_e^t, n_l^t, càd le nombre
-  d'ouvriers, d'embauches et de licenciements en début de semaine t (on
-  considère n *après* embauche et licenciement)
+De nouvelles contraintes sur ces variables sont ajoutées:
+\begin{enumerate}
+    \item nouvelles variables positives:
+    \[
+        n_\text{o}^t, n_\text{e}^t, n_\text{l}^t \geq 0
+        \text;
+    \]
+    
+    \item la variation du nombre d'ouvrier doit dépendre du nombre d'embauche et de licenciement:
+    \[
+        n_\text{o}^t - n_\text{o}^{t-1} = n_\text{e}^t - n_\text{l}^t
+        \text;
+    \]
+    
+    \item les limites sur la capacité en heures normales et supplémentaires changent pour dépendre du nombre d'ouvriers :
+    \[
+        n_hs^t \leq N_{hs,max}
+        \text.
+    \]
+\end{enumerate}
 
-- Ajouter une contrainte
-    n_o^t, n_e^t, n_l^t >= 0
-  qui garantit la positivité des nouvelles variables.
-
-- Ajouter une contrainte
-    n_o^t - n_o^{t-1} = n_e^t - n_l^t
-  qui "garde en mémoire" l'évolution du nombre d'ouvriers.
-
-- Modifier la contrainte
-    n_hs^t <= N_{hs,max}
-  pour prendre en compte que N_{hs,max} n'est plus constant, mais dépend
-  maintenant linéairement de n_o^t.
-
-- Ajouter le salaire à la fonction objectif : on se retrouve avec
-    f(...) = ... + n_o*C_o
-  avec C_o le salaire hebdomadaire d'un ouvrier.
+Enfin, la fonction-objectif est modifiée pour inclure:
+\begin{itemize}
+    \item le salaire des ouvriers, qui n'est plus constant:
+    \[
+        n_\text{o}^t*C_\text{o}
+        \text{ et }
+    \]
+    
+    \item le prix d'embauche et de licenciement:
+    \[
+        n_\text{e}^t*C_\text{e} + n_\text{l}^t*C_\text{l}
+        \text.
+    \]
+\end{itemize}
