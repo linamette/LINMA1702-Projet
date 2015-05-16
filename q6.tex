@@ -32,15 +32,20 @@ En fait, il n'est pas possible de trouver une contrainte linéaire qui permette 
 \begin{figure}[h] \label{fig:nonconvexe}
     \centering
     \setlength{\unitlength}{0.25cm}
-    \begin{picture}(12,12)
+    \begin{picture}(14,14)(-1,-1)
     \thinlines
-    \put(0,0){\vector(0,1){12}}
-    \put(0,0){\vector(1,0){12}}
+    \put(0,0){\vector(0,1){13}}
+    \put(0,0){\vector(1,0){13}}
     
-    \put(-3,11){$\xi_{i+1}$}
-    \put(11,-1.5){$\xi_i$}
+    \put(-3,12){$\xi_{i+1}$}
+    \put(12,-1.5){$\xi_i$}
     
-    \linethickness{.8mm}
+    \put(-1.5,9.5){1}
+    \put(9.5,-2){1}
+    \put(-0.5,10){\line(1,0){1}}
+    \put(10,-0.5){\line(0,1){1}}
+    
+    \linethickness{.6mm}
     \put(0,0){\line(1,0){10}}
     \put(10,0){\line(0,1){10}}
     
@@ -49,6 +54,6 @@ En fait, il n'est pas possible de trouver une contrainte linéaire qui permette 
     \put(2,0){\line(3,2){8}}
     
     \end{picture}
-    \caption{Il n'est pas possible de tracer lier un point du segment du dessous à un point du segment de droite tout en restant dans l'ensemble formé par ces deux segments. L'ensemble est donc convexe. }
+    \caption{Il n'est pas possible de lier un point du segment du dessous à un point du segment de droite tout en restant dans l'ensemble formé par ces deux segments. Cet ensemble n'est donc pas convexe.}
 \end{figure}
 
