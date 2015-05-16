@@ -1,37 +1,49 @@
-Afin d'inclure la variation du nombre d'employés, nous introduisons trois nouvelles variables pour chaque semaine: $n_\text{o}^t$, le nombre d'ouvriers après embauche et licenciement, $n_\text{e}^t$ le nombre d'embauches et $n_\text{l}^t$, le nombre de licenciements.
+Afin d'inclure la variation du nombre d'employés, nous introduisons trois nouvelles variables pour chaque semaine $t$:
+
+\begin{itemize}[before={\renewcommand\makelabel[1]{\makebox[1cm][r]{##1\hspace{.2cm}}}}]
+    \item[$n_\mathrm{o}^t$] le nombre d'ouvriers après embauche et licenciement
+    \item[$n_\mathrm{e}^t$] le nombre d'embauches
+    \item[$n_\mathrm{l}^t$] le nombre de licenciements.
+\end{itemize}
 
 De nouvelles contraintes sur ces variables sont ajoutées:
-\begin{enumerate}
+
+\begin{itemize}
     \item nouvelles variables positives:
     \[
-        n_\text{o}^t, n_\text{e}^t, n_\text{l}^t \geq 0
+        n_\mathrm{o}^t, n_\mathrm{e}^t, n_\mathrm{l}^t \geq 0
         \text;
     \]
     
     \item la variation du nombre d'ouvrier doit dépendre du nombre d'embauche et de licenciement:
     \[
-        n_\text{o}^t - n_\text{o}^{t-1} = n_\text{e}^t - n_\text{l}^t
+        n_\mathrm{o}^t - n_\mathrm{o}^{t-1} = n_\mathrm{e}^t - n_\mathrm{l}^t
         \text;
     \]
     
     \item les limites sur la capacité en heures normales et supplémentaires changent pour dépendre du nombre d'ouvriers :
     \[
-        n_hs^t \leq N_{hs,max}
+        n^t \leq N_\mathrm{h}\,n_\mathrm{o}^t/D_\mathrm{a}
+        \quad\mathrm{et}\quad
+        n_\mathrm{hs}^t \leq N_\mathrm{hs}\,n_\mathrm{o}^t/D_\mathrm{a}
         \text.
     \]
-\end{enumerate}
+\end{itemize}
 
 Enfin, la fonction-objectif est modifiée pour inclure:
+
 \begin{itemize}
     \item le salaire des ouvriers, qui n'est plus constant:
     \[
-        n_\text{o}^t*C_\text{o}
-        \text{ et }
+        f^t(\dots,n_\mathrm{o}^t)
+        = \dots + n_\mathrm{o}^t\,C_\mathrm{h}
+        \text;
     \]
     
     \item le prix d'embauche et de licenciement:
     \[
-        n_\text{e}^t*C_\text{e} + n_\text{l}^t*C_\text{l}
+        f^t(\dots,n_\mathrm{e}^t,n_\mathrm{l}^t)
+        = \dots + n_\mathrm{e}^t\,C_\mathrm{e} + n_\mathrm{l}^t\,C_\mathrm{l}
         \text.
     \]
 \end{itemize}
