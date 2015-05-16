@@ -1,0 +1,139 @@
+\subsection*{Les variables et données du problème   }
+Avant toutes choses, nous allons commencer par nommer et détailler les différentes données du problème. Celles-ci sont reprises dans la liste suivante:
+
+\begin{itemize}[before={\renewcommand\makelabel[1]{\makebox[1cm][r]{##1\hspace{.2cm}}}}]
+    \item[$T$] le nombre de semaines sur lesquelles on effectue la planification
+    \item[$D^t$] la demande de smartphones pour la semaine $t$
+    \item[$D_\mathrm{a}$] la durée d'assemblage d'un smartphone, en heures
+    \item[$N_\mathrm{o}$] le nombre d'ouvriers
+    \item[$N_\mathrm{h}$] le nombre d'heures normales disponibles pour assembler des smartphones, par semaine et par ouvrier
+    \item[$N_\mathrm{hs}$] le nombre d'heures supplémentaires disponibles pour assembler des smartphones, par semaine et par ouvrier
+    \item[$N_\mathrm{st}$] le nombre maximal de smartphones sous-traitables, par semaine 
+    \item[$C_\mathrm{m}$] le coût des matériaux
+    \item[$C_\mathrm{s}$] le coût du stockage d'un smartphone
+    \item[$C_\mathrm{h}$] le coût horaire d'un ouvrier
+    \item[$C_\mathrm{hs}$] le coût d'une heure supplémentaire de la part d'un ouvrier
+    \item[$C_\mathrm{st}$] le coût de la sous-traitance pour l'assemblage d'un smartphone
+    \item[$C_\mathrm{r}$] le coût supplémentaire associé au retard de livraison d'un smartphone
+    \item[$C_\mathrm{e}$] le coût d'embauche d'un ouvrier
+    \item[$C_\mathrm{l}$] le coût de licenciement d'un ouvrier
+    \item[$S_\mathrm{i}$] le stock initial (et final) de smartphones
+\end{itemize}
+
+Viennent ensuite les variables:
+
+\begin{itemize}[before={\renewcommand\makelabel[1]{\makebox[1cm][r]{##1\hspace{.2cm}}}}]
+    \item[$n^t$] le nombre de smartphones produits en conditions normales
+    \item[$n_\mathrm{hs}^t$] le nombre de smartphones produits en heures supplémentaires
+    \item[$n_\mathrm{st}^t$] le nombre de smartphones produits en sous-traitance
+    \item[$s^0$] le stock initial de smartphones
+    \item[$s^t$] le stock de smartphones à la fin de la semaine $t$, disponible en semaine $t+1$, pour lequel on paye le stockage en semaine $t$
+    \item[$r^t$] les smartphones retardés lors de la semaine $t-1$, à produire et livrer en semaine $t$
+\end{itemize}
+
+\subsection*{Les contraintes}
+
+Ceci fait, nous pouvons maintenant lister les contraintes selon lesquelles nous allons optimiser:
+
+\begin{enumerate}
+    \item égalité entre
+    \begin{itemize}
+        \item les smartphones produits et disponible en stock en début de semaine et
+        \item la demande, le stock disponible en fin de semaine et le retard de la semaine passé, moins le retard que l'on décide de prendre cette semaine :
+    \end{itemize}
+    \[
+        n^t + n_\mathrm{hs}^t + n_\mathrm{st}^t + s^{t-1} = D^t + s^t + r^t - r^{t+1}
+        \text;
+    \]
+    
+    \item nécessité de produire chaque semaine au moins le nombre de smartphones retardés lors de la semaine précédente (afin de ne pas avoir un retard de deux semaines) :
+    \[
+        n^t + n_\mathrm{hs}^t + n_\mathrm{st}^t + (s^{t-1} - s^t) \geq r^t
+        \text;
+    \]
+    
+    \item limite sur la capacité en heures normales, supplémentaires et en sous-traitance :
+    \[
+        n^t \leq \frac{N_\mathrm{h}\,N_\mathrm{o}}{D_\mathrm{a}}
+        \text,\qquad
+        n_\mathrm{hs}^t \leq \frac{N_\mathrm{hs}\,N_\mathrm{o}}{D_\mathrm{a}}
+        \quad\text{et}\quad
+        n_\mathrm{st}^t \leq N_\mathrm{st}
+        \text;
+    \]
+    
+    \item stock initial et final fixé à $S_\mathrm{i}$ :
+    \[
+        s^0 = S_\mathrm{i} \quad\text{et}\quad s^T = S_\mathrm{i}
+        \text;
+    \]
+    
+    \item pas de retard à rattrapper en semaine 1 :
+    \[
+        r^1 = 0
+        \text{;}
+    \]
+    
+    \item enfin, toutes les variables positives :
+    \[
+        n^t, n_\mathrm{hs}^t, n_\mathrm{st}^t, s^t, s^T, r^t, r^T \geq 0
+        \text;
+    \]
+\end{enumerate}
+
+\subsection*{La fonction objectif}
+
+Terminons par la fonction objectif. Soit
+$f(x) : \mathbb{R}^{5T+1} \rightarrow \mathbb{R}$,
+avec $x$ un vecteur de $\mathbb{R}^{5T+1}$:
+\[
+    x = (n^1,\dots,n^T,n_\mathrm{hs}^1,\dots,n_\mathrm{hs}^T,n_\mathrm{st}^1,\dots,n_\mathrm{st}^T,s^0,\dots,s^T,r^1,\dots,r^T)
+    \text.
+\]
+
+Par simplicité, nous allons décomposer $f(x)$ en une somme de fonctions $f^t$ définies pour chaque semaine $t$:
+\[
+    f(x) = \sum_{t=1}^{T} f^t(n^t, n_\mathrm{hs}^t, n_\mathrm{st}^t, s^t, r^t)
+\]
+et
+\begin{align*}
+    f^t(n^t, n_\mathrm{hs}^t, n_\mathrm{st}^t, s^t, r^t)
+    &= (n^t + n_\mathrm{hs}^t)\,C_\mathrm{m} 
+    & \text{prix des matériaux}\\
+    &+ n_\mathrm{hs}^t\,D_\mathrm{a}\,C_\mathrm{hs}
+    & \text{production en heures supplémentaires}\\
+    &+ n_\mathrm{st}^t\,C_\mathrm{st}
+    & \text{production sous-traitée}\\
+    &+ s^t\,C_\mathrm{s}
+    & \text{stockage des smartphones}\\
+    &+ r^t\,C_\mathrm{r}
+    & \text{retard de livraison}
+    \text.
+\end{align*}
+
+Il est à noter que le salaire en heure normale des ouvriers n'apparaît pas dans cette fonction: nous ne sommes plus au XIXe siècle, un ouvrier est donc toujours payé pour sa semaine, peu importe le travail qu'il a réellement effectué. Il s'agit donc d'un coût fixe que l'on ne peut pas optimiser sans licencier des ouvriers.
+
+\subsection*{Le modèle complet}
+
+En résumé, le problème se modélise de la manière suivante :
+\begin{align*}
+    \min_{x}\;f(x) =& \sum_{t=1}^{T}
+    (n^t + n_\mathrm{hs}^t)\,C_\mathrm{m} 
+    + n_\mathrm{hs}^t\,D_\mathrm{a}\,C_\mathrm{hs} \\
+    &+ n_\mathrm{st}^t\,C_\mathrm{st}
+    + s^t\,C_\mathrm{s}
+    + r^t\,C_\mathrm{r} \\[0.5em]
+%
+    \mathrm{s.c.q.}\;\phantom{f(x) =}
+    & n^t + n_\mathrm{hs}^t + n_\mathrm{st}^t + s^{t-1} = D^t + s^t + r^t - r^{t+1} \\
+    & n^t + n_\mathrm{hs}^t + n_\mathrm{st}^t + (s^{t-1} - s^t) \geq r^t \\
+    & n^t \leq N_\mathrm{h}\,N_\mathrm{o}/D_\mathrm{a} \\
+    & n_\mathrm{hs}^t \leq N_\mathrm{hs}\,N_\mathrm{o}/D_\mathrm{a} \\
+    & n_\mathrm{st}^t \leq N_\mathrm{st} \\
+    & s^0 = S_\mathrm{i} \\
+    & s^T = S_\mathrm{i} \\
+    & r^1 = 0 \\
+    & n^t, n_\mathrm{hs}^t, n_\mathrm{st}^t, s^t, s^T, r^t, r^T \geq 0 \\
+\end{align*}
+
+À ce stade-ci, on peut se demander si l'hypothèse des variables non-entières n'entraînera pas des résultats aberrants, tel qu'un nombre de smartphones produits non-entier.

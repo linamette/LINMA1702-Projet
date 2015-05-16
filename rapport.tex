@@ -1,0 +1,135 @@
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc} 
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage[french]{babel}
+\usepackage[in]{fullpage}
+
+\usepackage{enumitem}
+\usepackage{array}
+\usepackage{multirow}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\usepackage{pgf}
+\usepackage{tikz}
+\usepackage{tikzscale}
+\usetikzlibrary{arrows,automata}
+\usetikzlibrary{positioning}
+\tikzset{
+    rect/.style={
+           rectangle,
+           rounded corners,
+           draw=black, very thick,
+           minimum height=2em,
+           inner sep=2pt,
+           text centered,
+           },
+    circ/.style={
+           circle,
+           draw=black, very thick,
+           minimum height=2em,
+           inner sep=2pt,
+           text centered,
+           },
+}
+
+% Pour les cadres
+\setlength{\fboxsep}{0.2cm} \newlength{\fboxwidth}
+\addtolength{\fboxwidth}{4cm}
+\addtolength{\fboxwidth}{\columnwidth} \addtolength{\fboxwidth}{-2 \fboxsep}
+\addtolength{\fboxwidth}{-2 \fboxrule}
+\newcommand{\parfbox}[1]{{\parindent0mm\fbox{\parbox{\fboxwidth}{#1}}}}
+
+\newcommand{\R}{{\mathbb{R}}}
+
+\setlength{\parskip}{.2cm}
+
+\begin{document}
+
+\everymath{\displaystyle}
+
+{\parindent0mm
+LINMA 1702 Mod\`{e}les et m\'{e}thodes d'optimisation \hfill Projet -- 2015 }
+\begin{center} {\Large Planification de la production \\ d'une ligne d'assemblage de smartphones}
+
+\bigskip
+
+Groupe 15\\Pierre-Alexandre Louis, Simon Boigelot et Xavier Lambein
+\end{center}
+
+\section{Modélisation et implémentation \\de la ligne d'assemblage simple}
+
+\parfbox{\textbf{Question 1.} Donnez une formulation linéaire (continue, sans variables entières) du problème de la planification de la ligne d'assemblage à personnel constant. Décrivez successivement variables, contraintes et fonction objectif. A ce stade, le fait de ne pas imposer l'intégralité des variables vous parait-il problématique ?}
+
+\input{q1}
+
+%\emph{Vous pouvez utiliser des notations mathématiques classiques pour décrires vos variables, fonction, contraintes. Il est conseillé de leur donner des noms mémorables (p.ex. variable $qp_t$ pour une quantité produite au temps $t$, plutôt que $x_i$). Il n'est pas nécessaire de décrire les matrices/vecteurs "fusionnés" $A$, $b$, $c$ qui seront assemblés et fournis au solver MATLAB à la question 3.}
+
+
+\parfbox{\textbf{Question 2.} Démontrez que, sous certaines hypothèses raisonnables, il est possible de garantir que votre modèle linéaire continu admette toujours une solution entière, c'est-à-dire ne comportant que des quantités produites entières chaque semaine. L'une de ces hypothèses est l'intégralité de la demande chaque semaine ; quelles sont les autres ?}
+
+\input{q2}
+
+%\emph{On attend ici une véritable preuve mathématique, qui peut faire appel à des résultats vus au cours. L'inclusion d'un schéma pourrait s'avérer utile.}
+
+\parfbox{\textbf{Question 3.} Implémentez sous MATLAB ce modèle linéaire continu, et calculez la solution correspondant aux données fournies sur icampus (utilisez la fonction \texttt{linprog}). Commentez l'allure de la solution obtenue.}
+
+\input{q3}
+
+%\emph{Il est inutile d'inclure ici vos codes MATLAB (ceux-ci seront transmis via icampus). Vous pouvez tout au plus commenter l'un ou l'autre aspect particulier de votre programme, si vous le jugez utile. La partie commentaire est la plus importante (elle peut inclure quelques observations sur le comportement du solver \texttt{linprog}).}
+
+%\emph{Conseils pour la rédaction des codes MATLAB : essayez autant que possible que votre code fonctionne directement à l'aide des données fournies en argument (son exécution pourrait par exemple correspondre à la commande \texttt{solution = modelesimpleq3(donnees)}, où la structure \texttt{solution} contiendra toutes les données utiles calculées par votre code). Vous pouvez créer une fonction (ou un script) différente pour chaque question qui nécessite une implémentation MATLAB. Si vous incluez des figures MATLAB dans votre rapport, vous pouvez également joindre le code qui a produit ces figures.}
+
+
+\parfbox{\textbf{Question 4.} Décrivez une procédure permettant, avec le moins de nouveaux calculs possibles, d'évaluer les conséquences sur la fonction objectif d’une petite variation de la demande prévue. Plus précisément, analysez l'effet du remplacement du vecteur \texttt{demande} par le vecteur \texttt{demande + epsilon * delta\textunderscore demande} où \texttt{delta\textunderscore demande} est un vecteur de perturbation sur la demande, et \texttt{epsilon} est un paramètre scalaire dont la valeur est faible.}
+
+\input{q4}
+
+%\emph{Seule une réponse théorique est demandée à ce stade.}
+
+
+\parfbox{\textbf{Question 5.} Testez sous MATLAB la procédure du point précédent avec les données fournies. Comparez ensuite la prédiction obtenue par cette procédure avec la valeur obtenue en résolvant à nouveau complètement le modèle, et ce pour un échantillon de valeurs du paramètre \texttt{epsilon} comprises entre $0$ et $1$ (par exemple \texttt{0:.1:1}). Commentez (éventuellement en vous aidant d'un graphique).}
+
+\input{q5}
+
+%\emph{A nouveau il n'est pas nécessaire d'inclure ici les quelques lignes de code nécessaires à ces calculs, mais bien sur icampus. Comparaison et commentaires sont les plus importants.}
+
+
+\parfbox{\textbf{Question 6.} Décrivez (sans l'implémenter) l'adaptation qu'il serait nécessaire à apporter au modèle si le coût de l'heure supplémentaire pris en compte était variable. Plus concrètement, considérez qu'après la première heure supplémentaire (facturée au coût horaire \texttt{cout\textunderscore heure\textunderscore sup} standard), chaque heure supplémentaire (éventuellement) est facturée à un coût horaire supérieur de $5 \%$ à celui de l'heure supplémentaire précédente. Est-il toujours possible de formuler (ou reformuler) le problème sous forme linéaire ? Expliquez. Et que se passerait-il si le coût horaire des supplémentaires \emph{diminuait}  lorsque le nombre d'heure prestées augmente ? Justifiez.}
+
+\input{q6}
+
+%\emph{Seule une réponse théorique est demandée. Réutilisez autant que possible les éléments inchangés (variables, contraintes, etc.) du modèle de la Question 1.}
+
+
+\section{Modélisation et implémentation \\de la ligne d'assemblage avec gestion du personnel}
+
+\parfbox{\textbf{Question 7.} Donnez à présent une formulation linéaire (continue, sans variables entières) du problème de la planification de la ligne d'assemblage incluant le gestion du personnel, en vous basant sur le modèle déjà construit à la Question 1. Décrivez successivement variables, contraintes et fonction objectif.}
+
+\input{q7}
+
+%\emph{Cf. instructions de la Question 1. Réutilisez autant que possible les éléments inchangés (variables, contraintes, etc.).}
+
+\parfbox{\textbf{Question 8.} Implémentez sous MATLAB ce modèle linéaire continu, et calculez la solution correspondant aux données fournies sur icampus. Commentez l'allure de la solution obtenue, et comparez à la solution du modèle simplifié. Commentez également l'intégralité des variables de la solution ; celle-ci présente-t-elle un aspect problématique ?}
+
+\input{q8}
+
+%\emph{Cf. instructions de la Question 3.}
+
+\parfbox{\textbf{Question 9.} Résolvez à nouveau ce modèle en imposant à présent l'intégralité des variables pour lesquelles c'est absolument indispensable (utilisez la fonction \texttt{intlinprog}). Commentez l'allure de la solution obtenue, et comparez aux solutions obtenues précédemment.}
+
+\input{q9}
+
+%\emph{Cf. instructions de la Question 3.}
+
+
+\section{Critique}
+\parfbox{\textbf{Question 10.} Critiquez les modèles proposés dans ce projet. Sont-ils réalistes ? Des approximations ont-elles été faites et, si oui sont-elles justifiées ? Quelles améliorations pourriez-vous proposer (sans rentrer dans les détails), avec quel impact potentiel sur la résolution du problème.}
+
+\input{q10}
+
+%\emph{C'est ici que vous pouvez, si vous le souhaitez, prendre un peu de recul par rapport à ce qui vous était demandé, et exercer votre esprit critique.}
+
+\end{document}
