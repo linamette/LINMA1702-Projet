@@ -20,7 +20,7 @@ Avant toutes choses, nous allons commencer par nommer et détailler les différe
     \item[$S_\mathrm{i}$] le stock initial (et final) de smartphones
 \end{itemize}
 
-Viennent ensuite les variables:
+Viennent ensuite les variables, pour $t \in \{1,\dots,T\}$:
 
 \begin{itemize}[before={\renewcommand\makelabel[1]{\makebox[1cm][r]{##1\hspace{.2cm}}}}]
     \item[$n^t$] le nombre de smartphones produits en conditions normales
@@ -41,14 +41,17 @@ Ceci fait, nous pouvons maintenant lister les contraintes selon lesquelles nous 
         \item les smartphones produits et disponible en stock en début de semaine et
         \item la demande, le stock disponible en fin de semaine et le retard de la semaine passé, moins le retard que l'on décide de prendre cette semaine :
     \end{itemize}
+    
     \[
         n^t + n_\mathrm{hs}^t + n_\mathrm{st}^t + s^{t-1} = D^t + s^t + r^t - r^{t+1}
+        \qquad\quad \forall t \in \{1,\dots,T-1\}
         \text;
     \]
     
-    \item nécessité de produire chaque semaine au moins le nombre de smartphones retardés lors de la semaine précédente (afin de ne pas avoir un retard de deux semaines) :
+    \item afin d'éviter un retard de deux semaines (possible avec la contrainte précédente), le retard doit être inférieur à la demande de la semaine précédente :
     \[
-        n^t + n_\mathrm{hs}^t + n_\mathrm{st}^t + (s^{t-1} - s^t) \geq r^t
+        D^t \geq r^{t+1}
+        \qquad\quad \forall t \in \{1,\dots,T-1\}
         \text;
     \]
     
@@ -59,6 +62,7 @@ Ceci fait, nous pouvons maintenant lister les contraintes selon lesquelles nous 
         n_\mathrm{hs}^t \leq \frac{N_\mathrm{hs}\,N_\mathrm{o}}{D_\mathrm{a}}
         \quad\text{et}\quad
         n_\mathrm{st}^t \leq N_\mathrm{st}
+        \qquad\quad \forall t \in \{1,\dots,T\}
         \text;
     \]
     
@@ -77,7 +81,8 @@ Ceci fait, nous pouvons maintenant lister les contraintes selon lesquelles nous 
     \item enfin, toutes les variables positives :
     \[
         n^t, n_\mathrm{hs}^t, n_\mathrm{st}^t, s^t, s^T, r^t, r^T \geq 0
-        \text;
+        \qquad\quad \forall t \in \{1,\dots,T\}
+        \text.
     \]
 \end{enumerate}
 
@@ -91,7 +96,7 @@ avec $x$ un vecteur de $\mathbb{R}^{5T+1}$:
     \text.
 \]
 
-Par simplicité, nous allons décomposer $f(x)$ en une somme de fonctions $f^t$ définies pour chaque semaine $t$:
+Par simplicité, nous allons décomposer $f(x)$ en une somme de fonctions $f^t$ définies pour chaque semaine $t \in \{1,\dots,T\}$:
 \[
     f(x) = \sum_{t=1}^{T} f^t(n^t, n_\mathrm{hs}^t, n_\mathrm{st}^t, s^t, r^t)
 \]
@@ -125,15 +130,15 @@ En résumé, le problème se modélise de la manière suivante :
     + r^t\,C_\mathrm{r} \\[0.5em]
 %
     \mathrm{s.c.q.}\;\phantom{f(x) =}
-    & n^t + n_\mathrm{hs}^t + n_\mathrm{st}^t + s^{t-1} = D^t + s^t + r^t - r^{t+1} \\
-    & n^t + n_\mathrm{hs}^t + n_\mathrm{st}^t + (s^{t-1} - s^t) \geq r^t \\
-    & n^t \leq N_\mathrm{h}\,N_\mathrm{o}/D_\mathrm{a} \\
-    & n_\mathrm{hs}^t \leq N_\mathrm{hs}\,N_\mathrm{o}/D_\mathrm{a} \\
-    & n_\mathrm{st}^t \leq N_\mathrm{st} \\
+    & n^t + n_\mathrm{hs}^t + n_\mathrm{st}^t + s^{t-1} = D^t + s^t + r^t - r^{t+1} & \forall t \in \{1,\dots,T-1\} \\
+    & D^t \geq r^{t+1} & \forall t \in \{1,\dots,T-1\} \\
+    & n^t \leq N_\mathrm{h}\,N_\mathrm{o}/D_\mathrm{a} & \forall t \in \{1,\dots,T\} \\
+    & n_\mathrm{hs}^t \leq N_\mathrm{hs}\,N_\mathrm{o}/D_\mathrm{a} & \forall t \in \{1,\dots,T\} \\
+    & n_\mathrm{st}^t \leq N_\mathrm{st} & \forall t \in \{1,\dots,T\} \\
     & s^0 = S_\mathrm{i} \\
     & s^T = S_\mathrm{i} \\
     & r^1 = 0 \\
-    & n^t, n_\mathrm{hs}^t, n_\mathrm{st}^t, s^t, s^T, r^t, r^T \geq 0 \\
+    & n^t, n_\mathrm{hs}^t, n_\mathrm{st}^t, s^0, s^t, r^t \geq 0 & \forall t \in \{1,\dots,T\} \\
 \end{align*}
 
 À ce stade-ci, on peut se demander si l'hypothèse des variables non-entières n'entraînera pas des résultats aberrants, tel qu'un nombre de smartphones produits non-entier.
