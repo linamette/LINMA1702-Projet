@@ -1,10 +1,10 @@
-Afin de démontrer que le problème relaxé donne une solution entière, nous allons montrer que le problème peut être reformulé sous la forme d'un flow de coût minimal, dont les capacités et les entrées/sorties sont entières.
+Afin de montrer que le problème relaxé donne une solution entière, nous allons montrer que le problème peut être reformulé sous la forme d'un flot de coût minimal, dont les capacités et les entrées/sorties sont entières.
 
 Voici comment nous avons reformulé le problème : nous avons défini un graphe orienté dont les deux noeuds d'entrée ont pour valeur $D=\sum_{i=0}^{T-1} D^t$, c'est-à-dire la quantité de smartphones à produire au total, et $s^0 = S_\mathrm{i}$, c'est-à-dire le stock initial de smartphones.
 
-Le graphe possède $T+1$ sorties, qui sont les demandes de chaque semaine $D^t$, et le stock de la dernière semaine $s^T = S_\mathrm{i}$. On note que la somme des entrées est égale à la somme des sorties, ce qui doit être le cas dans un problème de flow.
+Le graphe possède $T+1$ sorties, qui sont les demandes de chaque semaine $D^t$, et le stock de la dernière semaine $s^T = S_\mathrm{i}$. On note que la somme des entrées est égale à la somme des sorties, ce qui doit être le cas dans un problème de flot.
 
-Le flow d'entrée $D$ va parcourir le graphe à travers $3T$ arrêtes sortantes de \og{}production\fg{}, correspondantes aux variables $n^t$, $n_\mathrm{hs}^t$, $n_\mathrm{st}^t$ pour chaque semaine $t \in \{1,\dots,T\}$. Celles-ci ont des coûts et des capacités correspondant à la variable associée, c'est-à-dire:
+Le flot d'entrée $D$ va parcourir le graphe à travers $3T$ arrêtes sortantes de \og{}production\fg{}, correspondantes aux variables $n^t$, $n_\mathrm{hs}^t$, $n_\mathrm{st}^t$ pour chaque semaine $t \in \{1,\dots,T\}$. Celles-ci ont des coûts et des capacités correspondant à la variable associée, c'est-à-dire:
 \begin{center}
 \begin{tabular}{c|cc}
     \textbf{Variable} & \textbf{Coût} & \textbf{Capacité} \\
@@ -69,3 +69,26 @@ Les différentes arêtes sont reprises dans le tableau suivant:
 \end{center}
 
 Il est à noter que $s^t$ ne correspond pas directement à une arête; au lieu de cela, la variable correspond à la somme des entrées sur le noeud $s^t$, c'est-à-dire à la somme des deux arêtes dont la variable est intitulée \og{}$s^t$\;\underline{*}\fg{} dans le tableau.
+
+Un schéma de ce graphe est représenté dans la figure~\ref{fig:q2_flow}.
+
+Maintenant que le graphe a été construit, le théorème sur les flots de coût minimum nous indique que si les demandes et les capacités du graphe sont entières, alors il existe une solution optimale entière au flot de coût minimum, et donc au problème de la question 1, les deux étant équivalents.
+
+Imposer que les demandes et capacités soient entières revient à imposer que les grandeurs suivantes soient entières:
+\begin{itemize}
+    \item $D^t \forall t \in 1,\dots,T$, ce qui est le cas: il s'agit d'un nombre de smartphones;
+    \item $s^0$ et $s^T$, ce qui est également le cas, pour la même raison;
+    \item $N_\mathrm{st}$, qui, de nouveau, est un nombre de smartphones;
+    \item $N_\mathrm{h}\,N_\mathrm{o}/D_\mathrm{a}$ et $N_\mathrm{hs}\,N_\mathrm{o}/D_\mathrm{a}$, qui sont entiers si le numérateur est multiple du dénominateur, ou bien si l'on impose l'hypothèse tout à fait raisonnable d'arrondir cette valeur à l'entier inférieur.
+\end{itemize}
+
+Les conditions sont donc bien vérifiées pour avoir un problème relaxé avec une solution entière, à condition de remplacer $N_\mathrm{h}\,N_\mathrm{o}/D_\mathrm{a}$ par $\floor{N_\mathrm{h}\,N_\mathrm{o}/D_\mathrm{a}}$, et similairement pour $N_\mathrm{hs}$.
+
+\begin{figure}[H]
+    \centering
+    \scalebox{1}{\includegraphics{q2_flow1.tikz}}
+    \scalebox{1}{\includegraphics{q2_flow2.tikz}}
+    \scalebox{1}{\includegraphics{q2_flow3.tikz}}
+    \caption{Graphes orientés représentant la première, la $t$-ème et la dernière semaine. Les entrées et sorties sont en rectangle, et les autres noeuds sont en cercle. Dans chaque noeud est indiqué la variable correspondante, avec un signe négatif dans le cas des sorties. Dans le cas des noeuds normaux, la variable correspond à la somme des flots des arêtes entrantes. Les variables indiquées à côté de certaines arêtes correspondent au flot qui passe dans ces arêtes. Les arrêtes en pointillés indiquent un plus grand nombre d'arrêtes, qui n'ont pas été représentées par simplicité. De même, les points de suspension indiquent qu'il manque le reste du graphe (c'est-à-dire, les autres semaines).}
+    \label{fig:q2_flow}
+\end{figure}

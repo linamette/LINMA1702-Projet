@@ -2,7 +2,7 @@
 
  \node[rect] (SOURCE)
  {
-   \(\sum_{i=1}^{T} d^i\)
+   \(\;D\;\)
  };
  
  \node[circ,
@@ -32,7 +32,7 @@
  below of=NI,
  node distance=2cm] (DI)
  {
-  \(-d^t\)
+  \(-D^t\)
  };
  
  
@@ -76,13 +76,13 @@
  (SOURCE)	 edge[bend right,dashed] (B2)
  
  (NI)		 edge		         (DI)
- (NI)		 edge[bend left]     (SI)
- (SIMO)		 edge[bend left]     node[anchor=center,above]{$\Delta^t s$} (DI)
- (SIMO)		 edge[bend right=50] node[anchor=center,above]{$s^t$} (SI)
+ (NI)		 edge[bend left]     node[anchor=center,right,pos=0.7]{$s^{t+1}$\;\underline{*}} (SI)
+ (SIMO)		 edge[bend left]     (DI)
+ (SIMO)		 edge[bend right=50] node[anchor=center,above]{$s^t$\;\underline{*}} (SI)
  
  (NIPO)		 edge[bend right]    node[anchor=center,above]{$r^{t+1}$} (DI)
- (SI)		 edge[bend left]     node[anchor=center,above]{$\Delta^{t+1} s$} (R3)
- (SI)		 edge[bend right=50] node[anchor=center,above]{$s^{t+1}$} (R3)
+ (SI)		 edge[bend left]     (R3)
+ (SI)		 edge[bend right=50] node[anchor=center,above]{$s^{t+1}$\;\underline{*}} (R3)
  ;
 
 \end{tikzpicture}

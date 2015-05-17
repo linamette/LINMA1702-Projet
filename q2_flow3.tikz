@@ -2,7 +2,7 @@
 
  \node[rect] (SOURCE)
  {
-   \(\sum_{i=1}^{T} d^i\)
+   \(\;D\;\)
  };
  
  \node[circ,
@@ -25,7 +25,7 @@
  below of=NI,
  node distance=2cm] (DI)
  {
-  \(-d^T\)
+  \(-D^T\)
  };
  
  \node[rect,
@@ -40,7 +40,7 @@
  left of=DI,
  node distance=4cm] (DIMO)
  {
-  \(-d^{T-1}\)
+  \(-D^{T-1}\)
  };
  
  \node[circ,
@@ -60,7 +60,7 @@
  (NI)		 edge[bend right] node[anchor=center,left]{$r^T$} (DIMO)
  (NI)		 edge		      (DI)
  (NI)		 edge[bend left]  (SI)
- (SIMO)		 edge[bend left]     node[anchor=center,above]{$\Delta^T s$} (DI)
+ (SIMO)		 edge[bend left]     (DI)
  (SIMO)		 edge[bend right=50] node[anchor=center,above]{$s^T$} (SI)
  ;
 
