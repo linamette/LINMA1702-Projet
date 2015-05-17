@@ -27,9 +27,9 @@ Pour résoudre ce problème, on serait tenté d'ajouter une contrainte du type:
 \]
 mais les variables $\xi$ n'étant pas entières, cela n'empêcherait pas d'avoir un résultat où tout $\xi_i^t$ a une certaine valeur inférieure à 1 pour tout $i$. Par exemple, si l'on veut effectuer 10 heures supplémentaires par ouvrier et que $N_\mathrm{hs} = 5$, on obtiendrait un optimum pour $\xi_i^t = 0.2 \;\forall i$.
 
-En fait, il n'est pas possible de trouver une contrainte linéaire qui permette d'imposer l'ordre des variables $\xi$, pour la simple raison que l'ensemble $\{(\xi_i, \xi_{i+1}) \in [0, 1]\!\times\![0, 1] \,|\, \xi_{i+1} = 0 \text{ si } \xi_i \neq 0\}$ est l'union de deux segments de droite, et un tel ensemble n'est pas convexe (voir fig. \ref{fig:nonconvexe}).
+En fait, il n'est pas possible de trouver une contrainte linéaire qui permette d'imposer l'ordre des variables $\xi$, pour la simple raison que l'ensemble $\{(\xi_i, \xi_{i+1}) \in [0, 1]\!\times\![0, 1] \,|\, \xi_{i+1} = 0 \text{ si } \xi_i \neq 0\}$ est l'union de deux segments de droite, et un tel ensemble n'est pas convexe (voir fig.~\ref{fig:nonconvexe}).
 
-\begin{figure}[h] \label{fig:nonconvexe}
+\begin{figure}[h]
     \centering
     \setlength{\unitlength}{0.25cm}
     \begin{picture}(14,14)(-1,-1)
@@ -55,5 +55,6 @@ En fait, il n'est pas possible de trouver une contrainte linéaire qui permette 
     
     \end{picture}
     \caption{Il n'est pas possible de lier un point du segment du dessous à un point du segment de droite, tout en restant dans l'ensemble formé par ces deux segments. Cet ensemble n'est donc pas convexe.}
+    \label{fig:nonconvexe}
 \end{figure}
 
