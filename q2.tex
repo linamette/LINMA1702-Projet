@@ -1,0 +1,71 @@
+Afin de démontrer que le problème relaxé donne une solution entière, nous allons montrer que le problème peut être reformulé sous la forme d'un flow de coût minimal, dont les capacités et les entrées/sorties sont entières.
+
+Voici comment nous avons reformulé le problème : nous avons défini un graphe orienté dont les deux noeuds d'entrée ont pour valeur $D=\sum_{i=0}^{T-1} D^t$, c'est-à-dire la quantité de smartphones à produire au total, et $s^0 = S_\mathrm{i}$, c'est-à-dire le stock initial de smartphones.
+
+Le graphe possède $T+1$ sorties, qui sont les demandes de chaque semaine $D^t$, et le stock de la dernière semaine $s^T = S_\mathrm{i}$. On note que la somme des entrées est égale à la somme des sorties, ce qui doit être le cas dans un problème de flow.
+
+Le flow d'entrée $D$ va parcourir le graphe à travers $3T$ arrêtes sortantes de \og{}production\fg{}, correspondantes aux variables $n^t$, $n_\mathrm{hs}^t$, $n_\mathrm{st}^t$ pour chaque semaine $t \in \{1,\dots,T\}$. Celles-ci ont des coûts et des capacités correspondant à la variable associée, c'est-à-dire:
+\begin{center}
+\begin{tabular}{c|cc}
+    \textbf{Variable} & \textbf{Coût} & \textbf{Capacité} \\
+    \hline
+    $n^t$ & $C_\mathrm{m}$ & $N_\mathrm{h}\,N_\mathrm{o}/D_\mathrm{a}$ \\
+    \hline
+    $n_\mathrm{hs}^t$ & $C_\mathrm{m}+C_\mathrm{hs}/D_\mathrm{a}$ & $N_\mathrm{hs}\,N_\mathrm{o}/D_\mathrm{a}$ \\
+    \hline
+    $n_\mathrm{st}^t$ & $C_\mathrm{st}$ & $N_\mathrm{st}$ \\
+\end{tabular}
+\end{center}
+
+Par simplicité, nous regroupons toute la production d'une semaine dans un noeud $P^t$. À partir de celui-ci, la production est redistribuée par des arêtes sortantes dans trois autres noeuds: la demande de cette semaine $D^t$, le stock de cette semaine $s^t$ et la demande de la semaine passée $D^{t-1}$.
+
+La première arête correspond simplement à remplire la demande de la semaine actuelle avec la production de cette même semaine, et a donc un coup nul et une capacité infinie: en effet, le prix de fabrication a déjà été payé avant d'arriver au noeud $P^t$, et la capacité est implicite, car le noeud de demande va être rempli jusqu'à-ce-que son entrée soit égale à sa sortie, qui vaut $D^t$.
+
+La seconde arête correspond à la production étant mise de côté dans le stock $s^t$. Celle-ci possède un coût, qui est celui de stockage $C_s$, et une capacité infinie, car il n'y a pas de contrainte sur la taille du stock.
+
+Enfin, la troisième arrête correspond à la production en retard, qui est envoyée à la demande de la semaine précédente. Elle a donc un coût $C_r$ et une capacité infinie.
+
+Pour terminer, les noeuds de stock $s^t$ possèdent chacun deux arêtes sortantes. La première est connectée à la demande de la semaine suivante $D^{t+1}$, sans coût car celui-ci a déjà été payé, et possède avec une capacité infinie. La seconde est connectée au stock de la semaine suivante $s^{t+1}$, avec un coût qui est celui de stockage $C_s$ et une capacité infinie.
+
+Les différentes arêtes sont reprises dans le tableau suivant:
+\begin{center}
+\begin{tabular}{cc|c|cc|c}
+    \textbf{De} & \textbf{À} & \textbf{Variable} & \textbf{Coût} & \textbf{Capacité} & $\forall t \in$ \\
+    \hline
+    $D$ & $P^t$ &
+    $n^t$ & $C_\mathrm{m}$ & $N_\mathrm{h}\,N_\mathrm{o}/D_\mathrm{a}$
+    & $1,\dots,T$ \\
+    \hline
+    $D$ & $P^t$ &
+    $n_\mathrm{hs}^t$ & $C_\mathrm{m}+C_\mathrm{hs}/D_\mathrm{a}$ & $N_\mathrm{hs}\,N_\mathrm{o}/D_\mathrm{a}$
+    & $1,\dots,T$ \\
+    \hline
+    $D$ & $P^t$ &
+    $n_\mathrm{st}^t$ & $C_\mathrm{st}$ & $N_\mathrm{st}$
+    & $1,\dots,T$ \\
+    
+    \hline
+    $P^t$ & $D^t$ &
+    --- & $0$ & $\infty$
+    & $1,\dots,T$ \\
+    \hline
+    $P^t$ & $s^t$ &
+    $s^t$\;\underline{*} & $C_\mathrm{s}$ & $\infty$
+    & $1,\dots,T$ \\
+    \hline
+    $P^t$ & $D^{t-1}$ &
+    $r^t$ & $C_\mathrm{r}$ & $\infty$
+    & $2,\dots,T$ \\
+    
+    \hline
+    $s^t$ & $D^{t+1}$ &
+    --- & $0$ & $\infty$
+    & $1,\dots,T-1$ \\
+    \hline
+    $s^t$ & $s^{t+1}$ &
+    $s^t$\;\underline{*} & $C_\mathrm{s}$ & $\infty$
+    & $1,\dots,T-1$ \\
+\end{tabular}
+\end{center}
+
+Il est à noter que $s^t$ ne correspond pas directement à une arête; au lieu de cela, la variable correspond à la somme des entrées sur le noeud $s^t$, c'est-à-dire à la somme des deux arêtes dont la variable est intitulée \og{}$s^t$\;\underline{*}\fg{} dans le tableau.
