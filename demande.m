@@ -1,7 +1,7 @@
-function [fval]= demande( donnees ,epsilon)
+function [fval,x,f,A,b,Aeq,beqvrai]= demande( donnees ,epsilon)
 
 if nargin <2
-    epsilon = 0
+    epsilon = 0;
 end
 %parametre d'optimisation
 semaine = donnees.T;
@@ -17,6 +17,10 @@ c_hs= donnees.cout_heure_sup;
 n_hs= donnees.nb_max_heure_sup;
 c_st= donnees.cout_sous_traitant;
 s_i = donnees.stock_initial;
+n_max_st = donnees.nb_max_sous_traitant;
+c_e = donnees.cout_embauche;
+c_l = donnees.cout_licenciement;
+nb_o = donnees.nb_max_ouvriers;
 delta = donnees.delta_demande;
 d_t = d_t + epsilon * delta;
 n_max = 60 * n_h * n_o / d_a;
@@ -160,10 +164,11 @@ Aeq(semaine+2,4*semaine+1)=1;
 Aeq(semaine+3,4*semaine+2)=1;
 
 
-
+beqvrai=beq.';
 options=optimoptions(@linprog,'Algorithm','dual-simplex');
 [x,fval,exiflag, output, lambda]=linprog(transpose(f),A,b,Aeq,beq.',[],[],[],options);
-
+fval
+fval=fval+c_h*n_o*semaine*35;
 
 
 

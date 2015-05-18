@@ -3,9 +3,18 @@ function [ fvals ] = modif_delta_demande(donnees)
 %vecteur
 
 
+%On effectue le primal puis le dual. On obtiens x* et y*. Puis on modifie
+%la valeur de la fonction objectif en fonction de epsilon
+[fval,xOriginal,f,A,b,Aeq,beq] = demande(donnees);
+bvrai = -[transpose(b) transpose (beq)]
+
+options=optimoptions(@linprog,'Algorithm','dual-simplex');
+y=linprog(bvrai,-transpose(A),f,[],[],[],[],[],options);
+
+
 
 %On refait le calcul depuis le debut avec un epsilon
-fvals=zeros(10,1);
+fvals=zeros(11,1);
 i=1;
 for epsilon=0:.1:1
     fvals(i)=demande(donnees, epsilon);
