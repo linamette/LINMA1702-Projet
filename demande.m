@@ -4,11 +4,11 @@ if nargin <2
     epsilon = 0;
 end
 %parametre d'optimisation
-semaine = donnees.T;
+semaine = 15;
 d_t = donnees.demande;
 c_m = donnees.cout_materiaux;
 c_s = donnees.cout_stockage;
-d_a = donnees.duree_assemblage;
+d_a = donnees.duree_assemblage/60;
 n_o = donnees.nb_ouvriers;
 c_h = donnees.cout_horaire;
 n_h = 35;
@@ -23,9 +23,11 @@ c_l = donnees.cout_licenciement;
 nb_o = donnees.nb_max_ouvriers;
 delta = donnees.delta_demande;
 d_t = d_t + epsilon * delta;
-n_max = 60 * n_h * n_o / d_a;
-nhs_max = 60 * n_hs * n_o /d_a;
+n_max =  n_h * n_o / d_a;
+nhs_max = n_hs * n_o /d_a;
 
+
+%Les variables sont dans l'ordre: n_t,nhs_t,ns_t,s_0,s_t,r_t
 %création de f à optimiser
 f=zeros(5*semaine+1,1);
 for i=1:semaine
@@ -33,7 +35,7 @@ for i=1:semaine
 end
 
 for i=semaine+1:2*semaine
-   f(i,1)=c_m + d_a / 60 * c_hs;
+   f(i,1)=c_m + d_a  * c_hs;
 end
 
 for i=2*semaine+1: 3*semaine
@@ -47,99 +49,55 @@ end
 for i=4*semaine+2:5*semaine+1
    f(i,1)=c_r; 
 end
-%f
+
+
 %Contraintes telles que Ax <= b
+
 %création de la matrice A
-A=zeros(8*semaine+1,5*semaine+1);
-for i=1:semaine
-   A(i ,i)=-1;
-   A(i, i+semaine)=-1;
-   A(i, i+2*semaine)=-1;
-   A(i, i+3*semaine)=-1;
-   A(i, i+3*semaine+1)=1;
-   A(i, i+4*semaine+1)=1;
-  % A(i, i+4*semaine+2)= 1;
-end %premiere contrainte
+A=zeros(9*semaine,5*semaine+1);
+for i=1:semaine-1 %r^(t+1) <= d_t(i)
 
-%for i=semaine+1:2*semaine
- %  A(i ,count)=            -1;
-  % A(i, count+semaine)=    -1;
-  % A(i, count+2*semaine)=  -1;
-  % A(i, count+3*semaine)=  -1;
-  % A(i, count+3*semaine+1)= 1;
-  % A(i, count+4*semaine+1)= 1;
-  % A(i, count+4*semaine+2)=-1;
-   %count = count + 1;
-%end 
+  A(i, i+4*semaine+2)= 1;
+end 
 
-% for i=semaine: semaine %2eme
-%    A(i ,count)=            -1;
-%    A(i, count+semaine)=    -1;
-%    A(i, count+2*semaine)=  -1;
-%    A(i, count+3*semaine)=  -1;
-%    A(i, count+3*semaine+1)= 1;
-%    A(i, count+4*semaine+1)= 1;
-%    count+1;
-% end 
-
+size(A)
 count=1;
-for i=semaine+1 : 2*semaine %3eme contrainte n_t <= n_max
+for i=semaine : 4*semaine-1 % contrainte n_t <= n_max + nhs_t <= nhs_max + nst <= n_max_st
     A(i,count)=1;
     count = count + 1; 
 end 
-
-count=semaine+1;
-for i=2*semaine+1 : 3*semaine %4eme
-    A(i,count)=1;
-    count = count + 1; ;
-end 
-
+size(A)
 count=1;
-for i=3*semaine+1:8*semaine+1 %8eme condition
+for i=4*semaine:9*semaine %toutes les variables sont positives
    A(i,count)=-1;
    count = count +1;
 end
-%A
-%size(A)
 
 
 %création de la matrice b
-b=zeros(8*semaine+1,1);
-%for i=1:2*semaine %premiere contrainte
- %  b(i)=d_t;
-%end
-for i=semaine+1:(2*semaine) %2eme
+b=zeros(9*semaine,1);
+for i=1:semaine-1 %r^(t+1) <= d_t(i)
+  b(i)=d_t(i);
+end
+for i=semaine:(2*semaine-1) %n_t <= n_max 
     b(i)= n_max;
    
 end
 
-for i =2*semaine+1: 3*semaine %3eme contrainte
+for i =2*semaine: 3*semaine-1 %nst <= n_max_st
     b(i)= nhs_max; 
 end
-%b(5*semaine+1) = s_i;
-%b(5*semaine+2) = s_i;
-%b(5*semaine+3) = s_i;
-%b(5*semaine+4) = s_i;
-%b
-%size(A)
-%size(f)
-%size(transpose(f))
-%size(b)
+
+for i=3*semaine:4*semaine-1 %les variables doivent être positives
+ b(i)=n_max_st;
+end
+
+%Contraintes telles Aeq *x =beq.'
 
 
-beq = zeros(1,semaine+3);
-for i=1:semaine
-   beq(i)=d_t(i); 
-end
-for i=semaine+1:semaine+2
-   beq(i)=s_i; 
-end
-for i=semaine+3:semaine+3
-   beq(i)=0; 
-end
 
 Aeq=zeros(semaine+3,5*semaine+1);
-for i=1:semaine-1
+for i=1:semaine-1  %n_t + nhs_t +ns_t + s_t-1 - s_t -r_t +r_t+1 = d_t(i)
    Aeq(i ,i)=1;
    Aeq(i, i+semaine)=1;
    Aeq(i, i+2*semaine)=1;
@@ -159,16 +117,28 @@ for i=semaine:semaine
   
 end %premiere contrainte pour la derniere semaine
 
-Aeq(semaine+1,3*semaine+1)=1;
-Aeq(semaine+2,4*semaine+1)=1;
-Aeq(semaine+3,4*semaine+2)=1;
+Aeq(semaine+1,3*semaine+1)=1; %s_0 = s_i
+Aeq(semaine+2,4*semaine+1)=1; %s_t = s_i
+Aeq(semaine+3,4*semaine+2)=1; %r_1 = 0
 
+beq = zeros(1,semaine+3); %n_t + nhs_t +ns_t + s_t-1 - s_t -r_t +r_t+1 = d_t(i)
+for i=1:semaine
+   beq(i)=d_t(i); 
+end
+for i=semaine+1:semaine+2 %s_0 = s_i + s_t = s_i
+   beq(i)=s_i; 
+end
+for i=semaine+3:semaine+3 %r_1 = 0
+   beq(i)=0; 
+end
 
 beqvrai=beq.';
+
 options=optimoptions(@linprog,'Algorithm','dual-simplex');
 [x,fval,exiflag, output, lambda]=linprog(transpose(f),A,b,Aeq,beq.',[],[],[],options);
-fval
-fval=fval+c_h*n_o*semaine*35;
+fval=fval+c_h*n_o*semaine*35; %fval renvoie le cout réel, on ajoute une constante
+                              %qui représente les salaires de tous les
+                              %employes sur la durée désirée
 
 
 
