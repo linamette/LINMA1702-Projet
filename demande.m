@@ -60,13 +60,13 @@ for i=1:semaine-1 %r^(t+1) <= d_t(i)
   A(i, i+4*semaine+2)= 1;
 end 
 
-size(A)
+
 count=1;
 for i=semaine : 4*semaine-1 % contrainte n_t <= n_max + nhs_t <= nhs_max + nst <= n_max_st
     A(i,count)=1;
     count = count + 1; 
 end 
-size(A)
+
 count=1;
 for i=4*semaine:9*semaine %toutes les variables sont positives
    A(i,count)=-1;
@@ -132,7 +132,7 @@ for i=semaine+3:semaine+3 %r_1 = 0
    beq(i)=0; 
 end
 
-beqvrai=beq.';
+beqvrai=beq.'
 
 options=optimoptions(@linprog,'Algorithm','dual-simplex');
 [x,fval,exiflag, output, lambda]=linprog(transpose(f),A,b,Aeq,beq.',[],[],[],options);
