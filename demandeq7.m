@@ -95,7 +95,7 @@ count=semaine+1;
 for i=2*semaine : 3*semaine-1 % nhs_t <= nhs * no_t /d_a
     A(i,count)=1;
     A(i,count+4*semaine+1)= -n_hs / d_a;
-    count = count + 1; ;
+    count = count + 1; 
 end
 
 count = 2*semaine+1;

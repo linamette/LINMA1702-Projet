@@ -197,7 +197,7 @@ beq(2*semaine+3)= n_o; %no_t - no_0 = ne_t - nl_t
 
 
 %options=optimoptions(@intlinprog,'Algorithm','dual-simplex');
-[x,fval]=intlinprog(transpose(f),(5*semaine+2:1:8*semaine+1),A,b,Aeq,beq.',[],[]);
+[x,fval]=intlinprog(transpose(f),(5*semaine+2:1:6*semaine),A,b,Aeq,beq.',[],[]);
 %Montre l'évolution des valeurs en fonction des semaines
 
 if show ~=0
