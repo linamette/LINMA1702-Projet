@@ -1,11 +1,15 @@
-function [fval,x,f,A,b,Aeq,beqvrai]= demandeq7( donnees ,epsilon,temps)
+function [fval,x,f,A,b,Aeq,beqvrai]= demandeq7( donnees ,epsilon,show,temps)
 
 if nargin <2
     epsilon = 0;
 end
+
+if nargin < 3
+    show=0;
+end
 %parametre d'optimisation
 semaine = donnees.T;
-if nargin > 2
+if nargin < 4
     semaine = temps;
 end
 d_t = donnees.demande;
@@ -52,7 +56,7 @@ for i=4*semaine+2:5*semaine+1
 end
 
 for i=5*semaine+2 : 6*semaine+1
-    f(i,1) = c_h;
+    f(i,1) = c_h*35;
 end
 
 for i=6*semaine+2 : 7*semaine+1
@@ -172,8 +176,12 @@ if(semaine > 1)
         count = count +1;
     end
 end
+Aeq(2*semaine+3,5*semaine+2)=1; %no_t - no_0 = ne_t - nl_t
+Aeq(2*semaine+3,6*semaine+2)=-1;
+Aeq(2*semaine+3,7*semaine+2)=1;
 
-beq = zeros(1,2*semaine+2);
+
+beq = zeros(1,2*semaine+3);
 for i=1:semaine %n_t + nhs_t +ns_t + s_t-1 - s_t -r_t +r_t+1 = d_t(i)
                 %n_t + nhs_t +ns_t + s_t-1 - s_t -r_t + 0 = d_t(T)
     beq(i)=d_t(i);
@@ -184,13 +192,41 @@ end
 for i=semaine+3:semaine+3 %r_1 = 0
     beq(i)=0;
 end
-
+beq(2*semaine+3)= n_o; %no_t - no_0 = ne_t - nl_t
 
 beqvrai=beq.';
 
 options=optimoptions(@linprog,'Algorithm','dual-simplex');
 [x,fval,exiflag, output, lambda]=linprog(transpose(f),A,b,Aeq,beq.',[],[],[],options);
+%Montre l'évolution des valeurs en fonction des semaines
 
+if show ~=0
+    figure();
+    hold on;
+    plot((1:1:15),d_t,'g');
+    plot((1:1:15),x(1:semaine),'b');
+    plot((1:1:15),x(semaine+1:2*semaine),'r');
+    plot((1:1:15),x(2*semaine+1:3*semaine),'m');
+    plot((1:1:15),x(3*semaine+2:4*semaine+1),'c');
+    plot((1:1:15),x(4*semaine+2:5*semaine+1),'k');
+    legend('demande','normal','heures supp','sous-traités','stockés','retardés');
+    xlabel('semaine');
+    title('Nombres de smartphones produits en fonctions des semaines pour une certaine demande');
+    ylabel('nombres d unités produites');
+    xlim([1 15]);
+    ylim([0 9000]);
+    hold off;
+    figure();
+    hold on;
+    orange= [1,0.5,0.5];
+    color2=[0.5,0.5,0.5];
+    plot((1:1:15),x(5*semaine+2:6*semaine+1),'y');
+    plot((1:1:15),x(6*semaine+2:7*semaine+1),'Color',orange);
+    plot((1:1:15),x(7*semaine+2:8*semaine+1),'Color',color2);
+    legend('nombre d ouvriers','nombre d embouchements','nombre de licenciements');
+    hold off;
+    
+end
 
 
 
