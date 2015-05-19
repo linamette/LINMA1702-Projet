@@ -1,15 +1,22 @@
-function [fval,x,f,A,b,Aeq,beqvrai]= demandeq7( donnees ,epsilon,show,temps)
+function [fval,x]= demandeq7( donnees,show,temps)
+%
+%Résoud le problème posé à la question 8 via linprog. Le système est sous
+%forme géométrique. Le nombre d ouvriers par semaine est variable
+%
+%@pre: -donnees: la structure de donnees nécesssaire pour les parametres
+%      -show: si different de 0, affiche un graphique des quantités produites en fonction des
+%      semaines et un graphique du nomobre d ouvriers par semaine.
+%
+%@post: -fval: la valuer de la fonction objectif
+%       -x: le vecteur des variables
+%
 
-if nargin <2
-    epsilon = 0;
-end
-
-if nargin < 3
+if nargin < 2
     show=0;
 end
-%parametre d'optimisation
+%parametres d'optimisation
 semaine = donnees.T;
-if nargin < 4
+if nargin < 3
     semaine = temps;
 end
 d_t = donnees.demande;
@@ -29,7 +36,6 @@ c_e = donnees.cout_embauche;
 c_l = donnees.cout_licenciement;
 nb_o = donnees.nb_max_ouvriers;
 delta = donnees.delta_demande;
-d_t = d_t + epsilon * delta;
 n_max = n_h * n_o / d_a;
 nhs_max = n_hs * n_o /d_a;
 
@@ -116,26 +122,7 @@ end
 for i=3*semaine:4*semaine-1% n_st <= n_max_st 
    b(i) = n_max_st;
 end
-%for i=1:2*semaine %premiere contrainte
-%  b(i)=d_t;
-%end
-% for i=semaine+1:(2*semaine) %2eme
-%     b(i)= n_max;
-%
-% end
-%
-% for i =2*semaine+1: 3*semaine %3eme contrainte
-%     b(i)= nhs_max;
-% end
-%b(5*semaine+1) = s_i;
-%b(5*semaine+2) = s_i;
-%b(5*semaine+3) = s_i;
-%b(5*semaine+4) = s_i;
-%b
-%size(A)
-%size(f)
-%size(transpose(f))
-%size(b)
+
 
 
 %Contraintes tellles que Aeq * x = beq
@@ -224,6 +211,7 @@ if show ~=0
     plot((1:1:15),x(6*semaine+2:7*semaine+1),'Color',orange);
     plot((1:1:15),x(7*semaine+2:8*semaine+1),'Color',color2);
     legend('nombre d ouvriers','nombre d embouchements','nombre de licenciements');
+    xlim([1 15]);
     hold off;
     
 end
