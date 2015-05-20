@@ -1,15 +1,24 @@
-function [fval,x]= demandeq8( donnees ,epsilon,show,temps)
+function [fval,x]= demandeq8( donnees,show,temps)
+%
+%Répond à la question en résolvant le problème avec un nombre d ouvriers
+%variable au moyen de intlinprog. La condiion d entierete est imposee sur
+%le nombre employe
+%
+%@pre: -donnees: la strucutre de donnees necessaires a la resolution
+%      -show: si different de 1, montre deux grpahiques: un sur les
+%      quantités produites par semaine et l'autre sur le nombre d ouvriers
+%      par semaine
+%      -temps: si précisé, donne le nombre de semaine sur lesquelles la
+%      planification doit être effectuée
+%
 
-if nargin <2
-    epsilon = 0;
-end
 
-if nargin < 3
+if nargin < 2
     show=0;
 end
 %parametre d'optimisation
 semaine = donnees.T;
-if nargin < 4
+if nargin < 3
     semaine = temps;
 end
 d_t = donnees.demande;
@@ -29,9 +38,6 @@ c_e = donnees.cout_embauche;
 c_l = donnees.cout_licenciement;
 nb_o = donnees.nb_max_ouvriers;
 delta = donnees.delta_demande;
-d_t = d_t + epsilon * delta;
-n_max = n_h * n_o / d_a;
-nhs_max = n_hs * n_o /d_a;
 
 %création de f à optimiser
 f=zeros(8*semaine+1,1);
@@ -71,7 +77,7 @@ end
 
 %Contraintes telles que Ax <= b
 %création de la matrice A
-A=zeros(12*semaine,8*semaine+1);
+A=zeros(13*semaine,8*semaine+1);
 for i=1:semaine-1 %r^(t+1) <= d_t(i)
     A(i, i+4*semaine+2)=1;
     
@@ -103,12 +109,16 @@ for i=4*semaine:12*semaine %variables plus grandes que 0
     A(i,count)=-1;
     count = count +1;
 end
-%A
-%size(A)
+
+count = 5*semaine+2; %nombre d ouvrier en S1
+for i=12*semaine+1:13*semaine
+   A(i, count)=1;
+   count = count +1;
+end
 
 
 %création de la matrice b
-b=zeros(12*semaine,1);
+b=zeros(13*semaine,1);
 for i=1:semaine-1
     b(i)= d_t(i);
 end
@@ -116,26 +126,9 @@ end
 for i=3*semaine:4*semaine-1% n_st <= n_max_st 
    b(i) = n_max_st;
 end
-%for i=1:2*semaine %premiere contrainte
-%  b(i)=d_t;
-%end
-% for i=semaine+1:(2*semaine) %2eme
-%     b(i)= n_max;
-%
-% end
-%
-% for i =2*semaine+1: 3*semaine %3eme contrainte
-%     b(i)= nhs_max;
-% end
-%b(5*semaine+1) = s_i;
-%b(5*semaine+2) = s_i;
-%b(5*semaine+3) = s_i;
-%b(5*semaine+4) = s_i;
-%b
-%size(A)
-%size(f)
-%size(transpose(f))
-%size(b)
+
+
+b( 12*semaine+1:13*semaine) = nb_o;
 
 
 %Contraintes tellles que Aeq * x = beq
@@ -196,7 +189,7 @@ beq(2*semaine+3)= n_o; %no_t - no_0 = ne_t - nl_t
 
 
 
-%options=optimoptions(@intlinprog,'Algorithm','dual-simplex');
+%Imosition de l'entierete du nombre d ouvriers
 [x,fval]=intlinprog(transpose(f),(5*semaine+2:1:6*semaine),A,b,Aeq,beq.',[],[]);
 %Montre l'évolution des valeurs en fonction des semaines
 

@@ -6,6 +6,8 @@ function [fval,x]= demandeq7( donnees,show,temps)
 %@pre: -donnees: la structure de donnees nécesssaire pour les parametres
 %      -show: si different de 0, affiche un graphique des quantités produites en fonction des
 %      semaines et un graphique du nomobre d ouvriers par semaine.
+%      -si précisé, le nombre de semaines sur lesquelles la planification a
+%      lieu
 %
 %@post: -fval: la valuer de la fonction objectif
 %       -x: le vecteur des variables
@@ -77,7 +79,7 @@ end
 
 %Contraintes telles que Ax <= b
 %création de la matrice A
-A=zeros(12*semaine,8*semaine+1);
+A=zeros(13*semaine,8*semaine+1);
 for i=1:semaine-1 %r^(t+1) <= d_t(i)
     A(i, i+4*semaine+2)=1;
     
@@ -109,12 +111,16 @@ for i=4*semaine:12*semaine %variables plus grandes que 0
     A(i,count)=-1;
     count = count +1;
 end
-%A
-%size(A)
+
+count = 5*semaine+2; %nombre d ouvrier en S1
+for i=12*semaine+1:13*semaine
+   A(i, count)=1;
+   count = count +1;
+end
 
 
 %création de la matrice b
-b=zeros(12*semaine,1);
+b=zeros(13*semaine,1);
 for i=1:semaine-1
     b(i)= d_t(i);
 end
@@ -123,7 +129,7 @@ for i=3*semaine:4*semaine-1% n_st <= n_max_st
    b(i) = n_max_st;
 end
 
-
+b( 12*semaine+1:13*semaine) = nb_o;
 
 %Contraintes tellles que Aeq * x = beq
 
