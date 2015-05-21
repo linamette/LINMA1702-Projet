@@ -1,0 +1,25 @@
+Tout problème d'optimisation linéaire possède un problème companion, appelé problème dual, pour lequel le rôle des variables et des contraintes est inversé. A chaque variable dans le primal est associée une contrainte dans le dual est vice-versa.
+
+Dans notre cas, le problème primal nous permet de connaître quelles quantités de smartphone nous devons produire et dans quel timing afin de diminuer un maximum nos dépenses et, infine, augmenter notre profit. Et ce en considérant nos ressources comme fixes.
+
+Si nous désirons observer ce que nous pourrions obtenir avec une quantité en plus d'une certaine ressource, nous devons connaître la sensibilté du primal vis-à-vis de cette même ressource. C'est le rôle du dual. Il nous donne l'influence ou le prix des variables. Soit un problème d'optimisation linéaire sous forme standard:
+\[
+    \min_{x}\,c^{T}x
+    \quad\text{tel que}\quad
+    Ax = b
+    \quad\text{avec}\quad
+    x \geq 0
+\]
+
+Nous pouvons y associer le problème dual suivant:
+\[
+    \max_{y}\,b^{T}y
+    \quad\text{tel que}\quad
+    A^{T}y = c
+    \quad\text{avec}\quad
+    y \text{ libre}
+\]
+
+Considérons la solution optimale de ces deux problèmes comme étant respectivement $x^{*}$ et $y^{*}$. Par la dualité forte et puisque nous sommes en présence d'un problème linéaire, nous avons d'office $ c^{T}x^{*} = b^{T}y^{*}$
+
+Si le vecteur des ressources devient $ b' = b + \Delta b $. $\Delta b$ ne doit pas être trop grand afin que la base optimale du problème ne change pas au sinon. En effet, cela corresprondrait à "sauter" sur un autre sommet du polyèdre et donnerait donc des résultats totalement différents. Supposons doc cette contrainte satisfaite, la fonction objectif du problème primal sera alors incréméntée d'une quantité $y^{*^{T}}\Delta b$. Dans notre cas, après avoir calculé la solution du primal avec le vecteur \textbf{demande} et après avoir calculé la solution du dual une fois pour toute, il ne faudra plus que rajouter $y^{*^{T}} \cdot \textbf{epsilon * delta\_demande}$.
