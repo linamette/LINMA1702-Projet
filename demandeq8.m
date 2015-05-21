@@ -189,7 +189,7 @@ beq(2*semaine+3)= n_o; %no_t - no_0 = ne_t - nl_t
 
 
 
-%Imosition de l'entierete du nombre d ouvriers
+%Imposition de l'entierete du nombre d ouvriers
 [x,fval]=intlinprog(transpose(f),(5*semaine+2:1:6*semaine),A,b,Aeq,beq.',[],[]);
 %Montre l'évolution des valeurs en fonction des semaines
 
@@ -204,19 +204,19 @@ if show ~=0
     plot((1:1:15),x(4*semaine+2:5*semaine+1),'k');
     legend('demande','normal','heures supp','sous-traités','stockés','retardés');
     xlabel('semaine');
-    title('Nombres de smartphones produits en fonctions des semaines pour une certaine demande');
+     title('Nombres de smartphones produits en fonctions des semaines pour une certaine demande');
     ylabel('nombres d unités produites');
     xlim([1 15]);
     ylim([0 9000]);
     hold off;
     figure();
     hold on;
-    orange= [1,0.5,0.5];
-    color2=[0.5,0.5,0.5];
-    plot((1:1:15),x(5*semaine+2:6*semaine+1),'y');
-    plot((1:1:15),x(6*semaine+2:7*semaine+1),'Color',orange);
-    plot((1:1:15),x(7*semaine+2:8*semaine+1),'Color',color2);
-    legend('nombre d ouvriers','nombre d embouchements','nombre de licenciements');
+    plot((1:1:15),x(5*semaine+2:6*semaine+1),'b');
+    plot((1:1:15),x(6*semaine+2:7*semaine+1),'g');
+    plot((1:1:15),x(7*semaine+2:8*semaine+1),'r');
+    legend('nombre d ouvriers','nombre d embauchements','nombre de licenciements');
+    xlabel('semaine');
+    ylabel('nombre d ouviers')
     hold off;
     
 end
