@@ -48,7 +48,7 @@ for i=1:semaine
 end
 
 for i=semaine+1:2*semaine
-    f(i,1)=c_m + d_a / 60 * c_hs;
+    f(i,1)=c_m + d_a  * c_hs;
 end
 
 for i=2*semaine+1: 3*semaine
