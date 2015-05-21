@@ -12,12 +12,27 @@ De nouvelles contraintes sur ces variables sont ajoutées:
     \item nouvelles variables positives:
     \[
         n_\mathrm{o}^t, n_\mathrm{e}^t, n_\mathrm{l}^t \geq 0
+        \qquad\quad \forall t \in \{1,\dots,T\}
         \text;
     \]
     
     \item la variation du nombre d'ouvrier doit dépendre du nombre d'embauche et de licenciement:
     \[
         n_\mathrm{o}^t - n_\mathrm{o}^{t-1} = n_\mathrm{e}^t - n_\mathrm{l}^t
+        \qquad\quad \forall t \in \{2,\dots,T\}
+        \text;
+    \]
+    
+    \item l'usine démarre avec un nombre d'ouvriers initial:
+    \[
+        n_\mathrm{o}^1 = N_\mathrm{o,i} + n_\mathrm{e}^1 - n_\mathrm{l}^1
+        \text;
+    \]
+    
+    \item le nombre d'ouvriers ne peut dépasser la capacité maximale:
+    \[
+        n_\mathrm{o}^t \leq N_\mathrm{o,max}
+        \qquad\quad \forall t \in \{1,\dots,T\}
         \text;
     \]
     
@@ -26,9 +41,11 @@ De nouvelles contraintes sur ces variables sont ajoutées:
         n^t \leq N_\mathrm{h}\,n_\mathrm{o}^t/D_\mathrm{a}
         \quad\mathrm{et}\quad
         n_\mathrm{hs}^t \leq N_\mathrm{hs}\,n_\mathrm{o}^t/D_\mathrm{a}
+        \qquad\quad \forall t \in \{1,\dots,T\}
         \text.
     \]
 \end{itemize}
+avec $N_\mathrm{o,i}$ et $N_\mathrm{o,max}$ deux nouvelles constantes, respectivement le nombre d'ouvriers initial et le nombre d'ouvriers maximal.
 
 Enfin, la fonction-objectif est modifiée pour inclure:
 
@@ -37,6 +54,7 @@ Enfin, la fonction-objectif est modifiée pour inclure:
     \[
         f^t(\dots,n_\mathrm{o}^t)
         = \dots + n_\mathrm{o}^t\,C_\mathrm{h}
+        \qquad\quad \forall t \in \{1,\dots,T\}
         \text;
     \]
     
@@ -44,6 +62,7 @@ Enfin, la fonction-objectif est modifiée pour inclure:
     \[
         f^t(\dots,n_\mathrm{e}^t,n_\mathrm{l}^t)
         = \dots + n_\mathrm{e}^t\,C_\mathrm{e} + n_\mathrm{l}^t\,C_\mathrm{l}
+        \qquad\quad \forall t \in \{1,\dots,T\}
         \text.
     \]
 \end{itemize}
